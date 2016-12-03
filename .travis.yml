@@ -1,35 +1,32 @@
 language: node_js
 os:
-  - osx
-  - linux
-deploy:
-  - provider: npm
-    skip_cleanup: true
-    api_key:
-      secure: IqiNyqSZZEQ+Cv5qDJpd2zxQz9sqNGC1HOJHnBwyitZdKCoB13a8wZ7SDg+14egtj8x3xAXK/xuFIKgmHKmu+VuVQ1aAAzt7UszqoKzgY67OvYvdia0HtkFiD0Lsn/f4QZ1aimBLswirRSBAxJd8jtgTXqoVOfWMxCLiBP/Xtd0=
-    email: mail@furkantunali.com
-    on:
-      tags: true
-      repo: jacopkane/legitimate
-      branch: master
+- osx
+- linux
 node_js:
 - node
 - 6.1
 - 6
 env:
 - NODE_ENV=test
+- CI=true
 before_script:
 - yarn install
 script:
-- yarn test
+- yarn test -- --coverage
 - yarn build
-- yarn start &
-- sleep 20
 cache:
   yarn: true
   directories:
   - node_modules
 after_deploy:
-  - yarn run postpublish
-after_success:
-  bash <(curl -s https://codecov.io/bash)
+- yarn run deploy
+after_success: bash <(curl -s https://codecov.io/bash)
+deploy:
+  skip_cleanup: true
+  provider: npm
+  email: mail@furkantunali.com
+  api_key:
+    secure: qDLEXhtWgyDXBSDCRUbxiOx6+TbkKGqBrchPQYSMR8dhFxwPt2JEEqShYosDVgrhn6veqCZuxQPvMwGnirLXO0aQYWKWzLqfgl12ozrClAyszFjeRXQ5rHesyEKogovhENKTq7OZb+sbMWaFJd5OXgWp9rZYlUO/hkjJfX87Zd6M1bqVXKLfm6TvZzK4FMSNbMU7yrk7bYBXw+OwUssS3VHm02v7UiD5wD6fcirBKvl/vtFaMdsSN4uGkzbUbr66vwPYtw489AJbQ7tTvxmAM5gNxjMOL/FD5y7gXN++UkFQX3toCcTRD8pp0Ipo4mUFT33gKBA6pgu6bOJJ5RHiHEKdy0rRgXZ0hf0xby0uQjwY9XlMNlo35AQzPRdZi1Ish9xIudbxNUUYXnKYi2G0hhWpS8K3p6I/tCq76kt0WZvwpNGAfPzCk3xckqXJK3CBDKuZercC56fBeIQv3816taXMVLc2p1ShDxHFIQ/omU3QyT4D6FqB1Bb7vWa7ILMXkVtsQtI2NK6KhR/6Lge1xEHIX+kz1+0mJbrSgHnfJsl8Wq5WvpIlp0ShH93lMqotHkk/Zwmx5nTE5iK7gXQ721sv9s8Lxk5h/nGIIoB9RPmUZqK5dnhd50mnl0/LePJiaEWfuS8rwwaSp/xmDdsGieUb7lXPafvVu4eBPWy+U1s=
+  on:
+    tags: true
+    repo: JacopKane/legitimate

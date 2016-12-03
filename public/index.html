@@ -7,6 +7,18 @@
     <title>legitimate</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="legitimate-demo-root"></div>
+    <!-- build:js -->
+    <script async type="text/javascript">
+      (function (window) {
+        var launchDemoInterval = setInterval(function () {
+          if (window.launchLegitimateDemo) {
+            clearInterval(launchDemoInterval);
+            launchLegitimateDemo(window);
+          }
+        }, 500);
+      }) (window);
+    </script>
+    <!-- endbuild -->
   </body>
 </html>
