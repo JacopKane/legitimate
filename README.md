@@ -1,14 +1,11 @@
 # legitimate
 
-Simple validation
-
-
 [![build][travis-image]][tag-url]
 [![version][tag-image]][tag-url]
 [![dependencies][david-image]][david-url]
 [![codecov][codecov-image]][codecov-url]
 
-
+Simple validation 👌
 
 ## Installation
 
