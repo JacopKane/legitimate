@@ -1,0 +1,21 @@
+{
+  "name": "legitimate",
+  "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/JacopKane/legitimate.git"
+  },
+  "homepage": "http://jacopkane.github.io/legitimate/",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "react-scripts": "0.7.0",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1"
+  },
+  "dependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

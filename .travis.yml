@@ -1,0 +1,35 @@
+language: node_js
+os:
+  - osx
+  - linux
+deploy:
+  - provider: npm
+    skip_cleanup: true
+    api_key:
+      secure: IqiNyqSZZEQ+Cv5qDJpd2zxQz9sqNGC1HOJHnBwyitZdKCoB13a8wZ7SDg+14egtj8x3xAXK/xuFIKgmHKmu+VuVQ1aAAzt7UszqoKzgY67OvYvdia0HtkFiD0Lsn/f4QZ1aimBLswirRSBAxJd8jtgTXqoVOfWMxCLiBP/Xtd0=
+    email: mail@furkantunali.com
+    on:
+      tags: true
+      repo: jacopkane/legitimate
+      branch: master
+node_js:
+- node
+- 6.1
+- 6
+env:
+- NODE_ENV=test
+before_script:
+- yarn install
+script:
+- yarn test
+- yarn build
+- yarn start &
+- sleep 20
+cache:
+  yarn: true
+  directories:
+  - node_modules
+after_deploy:
+  - yarn run postpublish
+after_success:
+  bash <(curl -s https://codecov.io/bash)
