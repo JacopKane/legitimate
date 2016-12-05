@@ -71,7 +71,8 @@
     "test": "node scripts/test.js --env=jsdom",
     "postpublish": "node scripts/build.js && gh-pages -d build",
     "preversion": "export CI=true && node scripts/test.js --env=jsdom --coverage && unset CI && node scripts/build.js && esdoc -c esdoc.json && git add -A;",
-    "postversion": "git push && git push --tags && gh-pages -d build"
+    "postversion": "git push && git push --tags && gh-pages -d build",
+    "deploy": "node scripts/build.js && gh-pages -d build"
   },
   "jest": {
     "collectCoverageFrom": [
