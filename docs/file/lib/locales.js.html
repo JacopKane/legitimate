@@ -52,9 +52,11 @@ export const
 
   NOT_LEGIT = () =&gt; crossMark,
 
-  EMPTY = () =&gt; `${crossMark} Could not be empty`,
+  EMPTY = () =&gt; `Could not be empty`,
 
-  TOO_SHORT = (value, length) =&gt; `${crossMark} Must be longer than ${length} characters`;
+  TOO_SHORT = (value, length) =&gt; `Must be longer than ${length} characters`,
+
+  NEED_MORE_LOWER_CASE = (value, min) =&gt; `At least ${min} small case`;
 </code></pre>
 
 </div>

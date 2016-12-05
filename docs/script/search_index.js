@@ -372,6 +372,12 @@ window.esdocSearchIndex = [
     "test"
   ],
   [
+    "",
+    "test-file/lib/Legitimate.test.js.html#lineNumber95",
+    "Legitimate fails without string props",
+    "test"
+  ],
+  [
     "flattenresponse lib/legitimate.js~flattenresponse,flattenresponse",
     "test-file/lib/Legitimate.test.js.html#lineNumber64",
     "Legitimate flattenResponse",
@@ -415,19 +421,19 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/lib/Legitimate.test.js.html#lineNumber173",
+    "test-file/lib/Legitimate.test.js.html#lineNumber200",
     "Legitimate isLegit",
     "test"
   ],
   [
     "",
-    "test-file/lib/Legitimate.test.js.html#lineNumber200",
+    "test-file/lib/Legitimate.test.js.html#lineNumber202",
     "Legitimate isLegit could reject",
     "test"
   ],
   [
     "",
-    "test-file/lib/Legitimate.test.js.html#lineNumber175",
+    "test-file/lib/Legitimate.test.js.html#lineNumber220",
     "Legitimate isLegit could resolve",
     "test"
   ],
@@ -439,37 +445,49 @@ window.esdocSearchIndex = [
   ],
   [
     "legitimate#setrules lib/legitimate.js~legitimate#setrules,legitimate#setrules",
-    "test-file/lib/Legitimate.test.js.html#lineNumber97",
+    "test-file/lib/Legitimate.test.js.html#lineNumber105",
     "Legitimate setRules",
     "test"
   ],
   [
     "legitimate#update lib/legitimate.js~legitimate#update,legitimate#update",
-    "test-file/lib/Legitimate.test.js.html#lineNumber103",
+    "test-file/lib/Legitimate.test.js.html#lineNumber111",
     "Legitimate update",
     "test"
   ],
   [
     "legitimate#validate lib/legitimate.js~legitimate#validate,legitimate#validate",
-    "test-file/lib/Legitimate.test.js.html#lineNumber110",
+    "test-file/lib/Legitimate.test.js.html#lineNumber118",
     "Legitimate validate",
     "test"
   ],
   [
     "",
-    "test-file/lib/Legitimate.test.js.html#lineNumber145",
+    "test-file/lib/Legitimate.test.js.html#lineNumber153",
     "Legitimate validate complex",
     "test"
   ],
   [
     "",
-    "test-file/lib/Legitimate.test.js.html#lineNumber112",
+    "test-file/lib/Legitimate.test.js.html#lineNumber180",
+    "Legitimate validate complex reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/Legitimate.test.js.html#lineNumber155",
+    "Legitimate validate complex resolve",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/Legitimate.test.js.html#lineNumber120",
     "Legitimate validate mock",
     "test"
   ],
   [
     "",
-    "test-file/lib/Legitimate.test.js.html#lineNumber129",
+    "test-file/lib/Legitimate.test.js.html#lineNumber137",
     "Legitimate validate real",
     "test"
   ],
@@ -577,49 +595,49 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber5",
+    "test-file/lib/validators.test.js.html#lineNumber8",
     "validators",
     "test"
   ],
   [
     "validators#istext validators#istext,validators#istext",
-    "test-file/lib/validators.test.js.html#lineNumber13",
+    "test-file/lib/validators.test.js.html#lineNumber16",
     "validators isText",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber30",
+    "test-file/lib/validators.test.js.html#lineNumber33",
     "validators isText could reject",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber15",
+    "test-file/lib/validators.test.js.html#lineNumber18",
     "validators isText could resolve",
     "test"
   ],
   [
     "validators validators,validators",
-    "test-file/lib/validators.test.js.html#lineNumber8",
+    "test-file/lib/validators.test.js.html#lineNumber11",
     "validators must be object",
     "test"
   ],
   [
     "validators#notempty validators#notempty,validators#notempty",
-    "test-file/lib/validators.test.js.html#lineNumber53",
+    "test-file/lib/validators.test.js.html#lineNumber56",
     "validators notEmpty",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber68",
+    "test-file/lib/validators.test.js.html#lineNumber71",
     "validators notEmpty could reject",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber55",
+    "test-file/lib/validators.test.js.html#lineNumber58",
     "validators notEmpty could resolve",
     "test"
   ]
