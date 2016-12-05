@@ -47,7 +47,7 @@ import * as validators from &apos;./validators&apos;;
 import { flattenResponse } from &apos;./Legitimate&apos;;
 
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
 
 describe(&apos;validators&apos;, () =&gt; {
 
@@ -56,7 +56,7 @@ describe(&apos;validators&apos;, () =&gt; {
     expect(typeof validators).toBe(&apos;object&apos;);
   });
 
-  /** @test {validators#isText} */
+  /** @test {isText} */
   describe(&apos;isText&apos;, () =&gt; {
 
     it(&apos;could resolve&apos;, cb =&gt; {
@@ -96,7 +96,7 @@ describe(&apos;validators&apos;, () =&gt; {
 
   });
 
-  /** @test {validators#notEmpty} */
+  /** @test {notEmpty} */
   describe(&apos;notEmpty&apos;, () =&gt; {
 
     it(&apos;could resolve&apos;, cb =&gt; {
@@ -120,6 +120,181 @@ describe(&apos;validators&apos;, () =&gt; {
         .then(cb.fail)
         .catch(response =&gt; {
           expect(response).toContain(locales.NOT_LEGIT(&apos;&apos;));
+          cb();
+        });
+
+    });
+
+  })
+
+  /** @test {minLowerCaseChars} */
+  describe(&apos;minLowerCaseChars&apos;, () =&gt; {
+
+    it(&apos;could resolve&apos;, cb =&gt; {
+
+      let value = &apos;a&#xFC;&#xF6;&#x131;BBBB&apos;;
+
+      validators
+        .minLowerCaseChars(value, locales, 4)
+        .then(flattenResponse)
+        .then(response =&gt; {
+          expect(response).toContain(locales.LEGIT(value, 4));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it(&apos;could reject&apos;, cb =&gt; {
+
+      let value = &apos;&#xFC;&#xF6;&#x131;BBBB&apos;;
+
+      validators
+        .minLowerCaseChars(value, locales, 4)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response =&gt; {
+          expect(response).toContain(locales.NEED_MORE_LOWER_CASE(value, 4));
+          cb();
+        });
+
+    });
+
+  })
+
+  /** @test {minUpperCaseChars} */
+  describe(&apos;minUpperCaseChars&apos;, () =&gt; {
+
+    it(&apos;could resolve&apos;, cb =&gt; {
+
+      let value = &apos;BbbBbBB&#xC7;&apos;;
+
+      validators
+        .minUpperCaseChars(value, locales, 5)
+        .then(flattenResponse)
+        .then(response =&gt; {
+          expect(response).toContain(locales.LEGIT(value, 5));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it(&apos;could reject&apos;, cb =&gt; {
+
+      let value = &apos;BbbBbBB&#xC7;&apos;;
+
+      validators
+        .minUpperCaseChars(value, locales, 6)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response =&gt; {
+          expect(response).toContain(locales.NEED_MORE_LOWER_CASE(value, 6));
+          cb();
+        });
+
+    });
+
+  })
+
+  /** @test {url} */
+  describe(&apos;url&apos;, () =&gt; {
+
+    it(&apos;could resolve&apos;, cb =&gt; {
+
+      let value = &apos;https://example.org/file?a=b&amp;c=d&apos;;
+
+      validators
+        .url(value, locales)
+        .then(flattenResponse)
+        .then(response =&gt; {
+          expect(response).toContain(locales.LEGIT(value));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it(&apos;could reject&apos;, cb =&gt; {
+
+      let value = &apos;https//example.orgfile?a=b&amp;c=d&apos;;
+
+      validators
+        .url(value, locales)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response =&gt; {
+          expect(response).toContain(locales.URL_IS_NOT_VALID(value));
+          cb();
+        });
+
+    });
+
+  });
+
+  /** @test {email} */
+  describe(&apos;email&apos;, () =&gt; {
+
+    it(&apos;could resolve&apos;, cb =&gt; {
+
+      let value = &apos;furkan@&#x3C4;&#x3B5;&#x3C3;&#x3C4;.com&apos;;
+
+      validators
+        .email(value, locales)
+        .then(flattenResponse)
+        .then(response =&gt; {
+          expect(response).toContain(locales.LEGIT(value));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it(&apos;could reject&apos;, cb =&gt; {
+
+      let value = &apos;asdasd.asa&apos;;
+
+      validators
+        .email(value, locales)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response =&gt; {
+          expect(response).toContain(locales.EMAIL_IS_NOT_VALID(value));
+          cb();
+        });
+
+    });
+
+  });
+
+  /** @test {fullName} */
+  describe(&apos;fullName&apos;, () =&gt; {
+
+    it(&apos;could resolve&apos;, cb =&gt; {
+
+      let value = &apos;Furkan Tunal&#x131; &#xF6;&#xE7;&#xDC;&apos;;
+
+      validators
+        .fullName(value, locales)
+        .then(flattenResponse)
+        .then(response =&gt; {
+          expect(response).toContain(locales.LEGIT(value));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it(&apos;could reject&apos;, cb =&gt; {
+
+      let value = &apos;Abc.Aa&apos;;
+
+      validators
+        .fullName(value, locales)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response =&gt; {
+          expect(response).toContain(locales.FULL_NAME_IS_NOT_VALID(value));
           cb();
         });
 
