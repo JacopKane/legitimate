@@ -14,6 +14,12 @@ if (typeof Set === 'undefined') {
   require('core-js/es6/set');
 }
 
+if (typeof URL === 'undefined') {
+  require('url-parse');
+} else {
+  require('url-parse');
+}
+
 if (typeof String.fromCodePoint === 'undefined') {
   // Rejection tracking prevents a common issue where React gets into an
   // inconsistent state due to an error, but it gets swallowed by a Promise,

@@ -600,7 +600,43 @@ window.esdocSearchIndex = [
     "test"
   ],
   [
-    "validators#istext validators#istext,validators#istext",
+    "email email,email",
+    "test-file/lib/validators.test.js.html#lineNumber192",
+    "validators email",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber209",
+    "validators email could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber194",
+    "validators email could resolve",
+    "test"
+  ],
+  [
+    "fullname fullname,fullname",
+    "test-file/lib/validators.test.js.html#lineNumber227",
+    "validators fullName",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber244",
+    "validators fullName could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber229",
+    "validators fullName could resolve",
+    "test"
+  ],
+  [
+    "istext lib/validators.js~istext,istext",
     "test-file/lib/validators.test.js.html#lineNumber16",
     "validators isText",
     "test"
@@ -618,13 +654,49 @@ window.esdocSearchIndex = [
     "test"
   ],
   [
+    "minlowercasechars minlowercasechars,minlowercasechars",
+    "test-file/lib/validators.test.js.html#lineNumber87",
+    "validators minLowerCaseChars",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber104",
+    "validators minLowerCaseChars could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber89",
+    "validators minLowerCaseChars could resolve",
+    "test"
+  ],
+  [
+    "minuppercasechars minuppercasechars,minuppercasechars",
+    "test-file/lib/validators.test.js.html#lineNumber122",
+    "validators minUpperCaseChars",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber139",
+    "validators minUpperCaseChars could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber124",
+    "validators minUpperCaseChars could resolve",
+    "test"
+  ],
+  [
     "validators validators,validators",
     "test-file/lib/validators.test.js.html#lineNumber11",
     "validators must be object",
     "test"
   ],
   [
-    "validators#notempty validators#notempty,validators#notempty",
+    "notempty notempty,notempty",
     "test-file/lib/validators.test.js.html#lineNumber56",
     "validators notEmpty",
     "test"
@@ -639,6 +711,24 @@ window.esdocSearchIndex = [
     "",
     "test-file/lib/validators.test.js.html#lineNumber58",
     "validators notEmpty could resolve",
+    "test"
+  ],
+  [
+    "url url,url",
+    "test-file/lib/validators.test.js.html#lineNumber157",
+    "validators url",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber174",
+    "validators url could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber159",
+    "validators url could resolve",
     "test"
   ]
 ]

@@ -1,6 +1,9 @@
 {
   "source": "./src/lib",
-  "excludes": ["\\.test\\.(js|es6)$"],
+  "excludes": [
+    "\\.test\\.(js|es6)$",
+    "build/docs"
+  ],
   "destination": "./public/docs",
   "coverage": true,
   "test": {

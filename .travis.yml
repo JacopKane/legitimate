@@ -4,7 +4,6 @@ os:
 - linux
 node_js:
 - node
-- 6.1
 - 6
 before_script:
 - yarn install

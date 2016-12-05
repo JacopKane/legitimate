@@ -10,7 +10,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import * as defaultValidators from './validators';\nimport * as defaultLocales from './locales';\n\nconst\n  rulesMap = new WeakMap(),\n  stateMap = new WeakMap(),\n  localesMap = new WeakMap(),\n  isPropProper = prop => {\n    if (typeof prop !== 'string') {\n      throw new Error('Given prop must be a valid string in order to update');\n    }\n  };\n\nexport const flattenResponse = response => new Promise((resolve, reject) => {\n  try {\n    if (typeof response !== 'object') {\n      throw new Error(`${response} should be object`);\n    }\n    if (response instanceof Array === false) {\n      return resolve(response);\n    }\n    resolve([...new Set([].concat(...response))]);\n  } catch (error) {\n    reject(error);\n  }\n});\n\n/**\n * @class {class} Legitimate\n * @classdesc Legitimate class to validate given state by updating and validating\n */\nexport class Legitimate {\n\n  /**\n   * @property state\n   * @readonly\n   * @description Returns the current state\n   * @type {object}\n   */\n  get state() {\n    return stateMap.get(this);\n  }\n\n  /**\n   * @property rules\n   * @readonly\n   * @description Returns the current rules\n   * @type {object}\n   */\n  get rules() {\n    return rulesMap.get(this);\n  }\n\n  /**\n   * @property locales\n   * @readonly\n   * @description Returns the current locales\n   * @type {object}\n   */\n  get locales() {\n    return localesMap.get(this);\n  }\n\n  /**\n   * @constructor\n   * @param locales {object} [param=defaultLocales]\n   * @param initialState {object} [initialState={}]\n   */\n  constructor(locales = defaultLocales, initialState = {}) {\n\n    rulesMap.set(this, Object.create(null));\n    stateMap.set(this, initialState);\n    localesMap.set(this, locales);\n  }\n\n  /**\n   * Sets validation functions for given prop\n   * @param prop\n   * @param rulesToAdd\n   * @returns {Legitimate}\n   */\n  setRules(prop = false, ...rulesToAdd) {\n    isPropProper(prop);\n\n    rulesMap.set(this, { ...this.rules, [prop] : [...rulesToAdd] });\n\n    return this;\n  }\n\n  /**\n   * Updates the state by given prop and value\n   * @param prop {string}\n   * @param value {*}\n   * @returns {Legitimate}\n   */\n  update(prop = false, value) {\n    isPropProper(prop);\n\n    stateMap\n      .set(this, { ...this.state, [prop] : value });\n\n    return this;\n  }\n\n  /**\n   * Triggers defined rules for prop\n   * @param prop\n   * @returns {Promise.<*>}\n   */\n  validate(prop) {\n    return new Promise((resolve, reject) => {\n\n      isPropProper(prop);\n\n      Promise\n        .all(this.rules[prop].map(validator => validator(this.state[prop], this.locales)))\n        .then(flattenResponse)\n        .then(resolve)\n        .catch(reject);\n\n    });\n  }\n\n  /**\n   * Validate all\n   * @returns {Promise.<*>}\n   */\n  isLegit() {\n    return Promise\n      .all(Object.keys(this.rules).map(::this.validate))\n      .then(flattenResponse)\n      .then(::Promise.resolve)\n      .catch(response => {\n\n        return flattenResponse(response)\n          .then(::Promise.reject)\n          .catch(::Promise.reject);\n\n      });\n  }\n\n}\n\nexport const\n  locales = defaultLocales,\n  validators = defaultValidators;\n\nexport default Legitimate;\n"
+    "content": "import * as defaultValidators from './validators';\nimport * as defaultLocales from './locales';\n\nconst\n  rulesMap = new WeakMap(),\n  stateMap = new WeakMap(),\n  localesMap = new WeakMap(),\n  isPropProper = prop => {\n    if (typeof prop !== 'string') {\n      throw new Error('Given prop must be a valid string in order to update');\n    }\n  };\n\n/**\n * Union\n * @param response\n */\nexport const flattenResponse = response => new Promise((resolve, reject) => {\n  try {\n    if (typeof response !== 'object') {\n      throw new Error(`${response} should be object`);\n    }\n    if (response instanceof Array === false) {\n      return resolve(response);\n    }\n    resolve([...new Set([].concat(...response))]);\n  } catch (error) {\n    reject(error);\n  }\n});\n\n/**\n * @class {class} Legitimate\n * @classdesc Legitimate class to validate given state by updating and validating\n */\nexport class Legitimate {\n\n  /**\n   * @property state\n   * @readonly\n   * @description Returns the current state\n   * @type {object}\n   */\n  get state() {\n    return stateMap.get(this);\n  }\n\n  /**\n   * @property rules\n   * @readonly\n   * @description Returns the current rules\n   * @type {object}\n   */\n  get rules() {\n    return rulesMap.get(this);\n  }\n\n  /**\n   * @property locales\n   * @readonly\n   * @description Returns the current locales\n   * @type {object}\n   */\n  get locales() {\n    return localesMap.get(this);\n  }\n\n  /**\n   * @constructor\n   * @param locales {object} [param=defaultLocales]\n   * @param initialState {object} [initialState={}]\n   */\n  constructor(locales = defaultLocales, initialState = {}) {\n\n    rulesMap.set(this, Object.create(null));\n    stateMap.set(this, initialState);\n    localesMap.set(this, locales);\n  }\n\n  /**\n   * Sets validation functions for given prop\n   * @param prop\n   * @param rulesToAdd\n   * @returns {Legitimate}\n   */\n  setRules(prop = false, ...rulesToAdd) {\n    isPropProper(prop);\n\n    rulesMap.set(this, { ...this.rules, [prop] : [...rulesToAdd] });\n\n    return this;\n  }\n\n  /**\n   * Updates the state by given prop and value\n   * @param prop {string}\n   * @param value {*}\n   * @returns {Legitimate}\n   */\n  update(prop = false, value) {\n    isPropProper(prop);\n\n    stateMap\n      .set(this, { ...this.state, [prop] : value });\n\n    return this;\n  }\n\n  /**\n   * Triggers defined rules for prop\n   * @param prop\n   * @returns {Promise.<*>}\n   */\n  validate(prop) {\n    return new Promise((resolve, reject) => {\n\n      isPropProper(prop);\n\n      Promise\n        .all(this.rules[prop].map(validator => validator(this.state[prop], this.locales)))\n        .then(flattenResponse)\n        .then(resolve)\n        .catch(reject);\n\n    });\n  }\n\n  /**\n   * Validate all\n   * @returns {Promise.<*>}\n   */\n  isLegit() {\n    return Promise\n      .all(Object.keys(this.rules).map(::this.validate))\n      .then(flattenResponse)\n      .then(::Promise.resolve)\n      .catch(response => {\n\n        return flattenResponse(response)\n          .then(::Promise.reject)\n          .catch(::Promise.reject);\n\n      });\n  }\n\n}\n\nexport const\n  locales = defaultLocales,\n  validators = defaultValidators;\n\nexport default Legitimate;\n"
   },
   {
     "__docId__": 1,
@@ -45,9 +45,20 @@
     "export": true,
     "importPath": "legitimate/lib/Legitimate.js",
     "importStyle": "{flattenResponse}",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
+    "description": "Union",
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "response",
+        "description": ""
+      }
+    ],
     "type": {
       "types": [
         "*"
@@ -67,7 +78,7 @@
     "importPath": "legitimate/lib/Legitimate.js",
     "importStyle": "{Legitimate}",
     "description": "",
-    "lineNumber": 32,
+    "lineNumber": 36,
     "unknown": [
       {
         "tagName": "@class",
@@ -90,7 +101,7 @@
     "longname": "lib/Legitimate.js~Legitimate#state",
     "access": null,
     "description": "",
-    "lineNumber": 40,
+    "lineNumber": 44,
     "unknown": [
       {
         "tagName": "@readonly",
@@ -133,7 +144,7 @@
     "longname": "lib/Legitimate.js~Legitimate#rules",
     "access": null,
     "description": "",
-    "lineNumber": 50,
+    "lineNumber": 54,
     "unknown": [
       {
         "tagName": "@readonly",
@@ -176,7 +187,7 @@
     "longname": "lib/Legitimate.js~Legitimate#locales",
     "access": null,
     "description": "",
-    "lineNumber": 60,
+    "lineNumber": 64,
     "unknown": [
       {
         "tagName": "@readonly",
@@ -219,7 +230,7 @@
     "longname": "lib/Legitimate.js~Legitimate#constructor",
     "access": null,
     "description": "",
-    "lineNumber": 69,
+    "lineNumber": 73,
     "unknown": [
       {
         "tagName": "@constructor",
@@ -260,7 +271,7 @@
     "longname": "lib/Legitimate.js~Legitimate#setRules",
     "access": null,
     "description": "Sets validation functions for given prop",
-    "lineNumber": 82,
+    "lineNumber": 86,
     "unknown": [
       {
         "tagName": "@returns",
@@ -309,7 +320,7 @@
     "longname": "lib/Legitimate.js~Legitimate#update",
     "access": null,
     "description": "Updates the state by given prop and value",
-    "lineNumber": 96,
+    "lineNumber": 100,
     "unknown": [
       {
         "tagName": "@returns",
@@ -358,7 +369,7 @@
     "longname": "lib/Legitimate.js~Legitimate#validate",
     "access": null,
     "description": "Triggers defined rules for prop",
-    "lineNumber": 110,
+    "lineNumber": 114,
     "unknown": [
       {
         "tagName": "@returns",
@@ -397,7 +408,7 @@
     "longname": "lib/Legitimate.js~Legitimate#isLegit",
     "access": null,
     "description": "Validate all",
-    "lineNumber": 128,
+    "lineNumber": 132,
     "unknown": [
       {
         "tagName": "@returns",
@@ -428,7 +439,7 @@
     "importPath": "legitimate/lib/Legitimate.js",
     "importStyle": "{locales}",
     "description": null,
-    "lineNumber": 144,
+    "lineNumber": 148,
     "undocument": true,
     "type": {
       "types": [

@@ -43,7 +43,8 @@
 
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="legitimate">legitimate</h1>
 <p><a href="https://www.npmjs.org/package/legitimate"><img src="https://img.shields.io/npm/v/legitimate.svg" alt="npm"></a>
-<a href="https://github.com/jacopkane/legitimate"><img src="https://travis-ci.org/JacopKane/legitimate.svg?branch=master" alt="build"></a>
+<a href="https://jacopkane.github.io/legitimate/docs/"><img src="https://doc.esdoc.org/github.com/JacopKane/legitimate/badge.svg" alt="docs"></a>
+<a href="https://travis-ci.org/JacopKane/legitimate"><img src="https://travis-ci.org/JacopKane/legitimate.svg?branch=master" alt="build"></a>
 <a href="https://codecov.io/gh/jacopkane/legitimate"><img src="https://codecov.io/gh/jacopkane/legitimate/branch/master/graph/badge.svg" alt="codecov"></a>
 <a href="https://david-dm.org/jacopkane/legitimate?type=dev"><img src="https://david-dm.org/jacopkane/legitimate/dev-status.svg" alt="dependencies"></a>
 <a href="https://github.com/jacopkane/legitimate/tags"><img src="https://img.shields.io/github/tag/jacopkane/legitimate.svg" alt="version"></a></p>
@@ -74,7 +75,7 @@ legitimate
 const
   legitimate = new Legitimate({
     ...locales
-    TOO_SHORT : &apos;Custom minimum chars&apos;;
+    TOO_SHORT : (value, min) =&gt; `Custom message : ${min}`;
   }, {
 
   }),
