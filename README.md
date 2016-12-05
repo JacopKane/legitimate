@@ -1,11 +1,16 @@
 # legitimate
 
-[![build][travis-image]][tag-url]
-[![version][tag-image]][tag-url]
-[![dependencies][david-image]][david-url]
+[![npm][npm-image]][npm-url]
+[![build][travis-image]][repo-url]
 [![codecov][codecov-image]][codecov-url]
+[![dependencies][david-image]][david-url]
+[![version][tag-image]][tag-url]
 
-Simple validation 👌
+Modular async validation 👌
+
+## [Docs](https://jacopkane.github.io/legitimate/docs "Docs")
+
+## [Demo](https://jacopkane.github.io/legitimate/ "Demo")
 
 ## Installation
 
@@ -17,9 +22,52 @@ or
 yarn add legitimate
 ```
 
+## Usage
+
+```javascript
+import { Legitimate, validators } from 'legitimate';
+
+const legitimate = new Legitimate();
+
+legitimate
+  .addRule('propToValidate', validators.notEmpty)
+  .update('propToValidate', 'value')
+  .validate('propToValidate') //validates single prop
+  .then(response => response.map(console.log))
+  .catch(response => response.map(console.warn));
+```
+
+more customization:
+
+```javascript
+import { Legitimate, validators, locales } from 'legitimate';
+
+const
+  legitimate = new Legitimate({
+    ...locales
+    TOO_SHORT : 'Custom minimum chars';
+  }, {
+
+  }),
+  secondPropRules = [
+    validators.isText,
+    (...params) => validators.minLowerCaseChars(...params, 2)
+  ];
+
+legitimate
+  .addRule('propToValidate', validations.notEmpty)
+  .addRule('anotherProp', ...secondPropRules)
+  .update('anotherProp', 'aaBBBB')
+  .isLegit() //validates all state
+  .then(response => response.map(console.log))
+  .catch(response => response.map(console.warn));
+```
+
+
+
 ## Development
 
-### demo dev server
+### start demo
 ```bash
 npm start
 ```
@@ -34,31 +82,54 @@ npm run build
 ```
 or
 ```bash
-yarn run build
+yarn build
 ```
 
-### tdd
+### test
 ```bash
-npm run tdd
+npm test
 ```
 or
 ```bash
-yarn run tdd
+npm test -- --coverage
 ```
-
-### version
-For versioning you can use [npm version](https://docs.npmjs.com/cli/version)
+or
 ```bash
-git add -A;
-npm version patch -f -m "Added XXX feature";
-git push;
+yarn test
 ```
 
+### version & publish
+For versioning you can use [npm version command](https://docs.npmjs.com/cli/version) with [semver](http://semver.org/)
+
+It will also
+- test
+- build
+- generate docs
+- stage
+- commit
+- push the tags to tracked remote repository
+- push the demo
+- if CI will pass also get deployed to NPM
+
+```bash
+npm version patch -f -m "Backwards-compatible bug fixes";
+```
+or
+```bash
+npm version minor -f -m "Backwards-compatible new functionality";
+```
+or
+```bash
+yarn version major -f -m "Made incompatible API changes";
+```
+
+[npm-image]: https://img.shields.io/npm/v/legitimate.svg
+[npm-url]:https://www.npmjs.org/package/legitimate
 [codecov-image]: https://codecov.io/gh/jacopkane/legitimate/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/jacopkane/legitimate
 [repo-url]: https://github.com/jacopkane/legitimate
-[travis-image]: https://travis-ci.org/jacopkane/legitimate.svg?branch=master
-[david-url]: https://david-dm.org/jacopkane/legitimate
-[david-image]: https://david-dm.org/jacopkane/legitimate.svg
+[travis-image]: https://travis-ci.org/JacopKane/legitimate.svg?branch=master
+[david-url]: https://david-dm.org/jacopkane/legitimate?type=dev
+[david-image]: https://david-dm.org/jacopkane/legitimate/dev-status.svg
 [tag-image]: https://img.shields.io/github/tag/jacopkane/legitimate.svg
 [tag-url]: https://github.com/jacopkane/legitimate/tags

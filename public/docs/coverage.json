@@ -1,0 +1,29 @@
+{
+  "coverage": "69.23%",
+  "expectCount": 13,
+  "actualCount": 9,
+  "files": {
+    "lib/locales.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        5
+      ]
+    },
+    "lib/Legitimate.js": {
+      "expectCount": 11,
+      "actualCount": 9,
+      "undocumentLines": [
+        14,
+        144
+      ]
+    },
+    "lib/validators.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
+      ]
+    }
+  }
+}

@@ -10,4 +10,3 @@ export const bootstrap = (id = 'legitimate-demo-root') => {
 };
 
 export default bootstrap;
-bootstrap();

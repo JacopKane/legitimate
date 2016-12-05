@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/JacopKane/legitimate.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Legitimate.js~Legitimate.html">Legitimate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-flattenResponse">flattenResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-locales">locales</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LEGIT">LEGIT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-isText">isText</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="legitimate">legitimate</h1>
+<p><a href="https://www.npmjs.org/package/legitimate"><img src="https://img.shields.io/npm/v/legitimate.svg" alt="npm"></a>
+<a href="https://github.com/jacopkane/legitimate"><img src="https://travis-ci.org/JacopKane/legitimate.svg?branch=master" alt="build"></a>
+<a href="https://codecov.io/gh/jacopkane/legitimate"><img src="https://codecov.io/gh/jacopkane/legitimate/branch/master/graph/badge.svg" alt="codecov"></a>
+<a href="https://david-dm.org/jacopkane/legitimate?type=dev"><img src="https://david-dm.org/jacopkane/legitimate/dev-status.svg" alt="dependencies"></a>
+<a href="https://github.com/jacopkane/legitimate/tags"><img src="https://img.shields.io/github/tag/jacopkane/legitimate.svg" alt="version"></a></p>
+<p>Modular async validation without any dependencies &#x1F44C;</p>
+<h2 id="installation">Installation</h2>
+<pre><code class="lang-bash"><code class="source-code prettyprint">npm install --save legitimate</code>
+</code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">yarn add legitimate</code>
+</code></pre>
+<h2 id="development">Development</h2>
+<h3 id="start-demo">start demo</h3>
+<pre><code class="lang-bash"><code class="source-code prettyprint">npm start</code>
+</code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">yarn start</code>
+</code></pre>
+<h3 id="build">build</h3>
+<pre><code class="lang-bash"><code class="source-code prettyprint">npm run build</code>
+</code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">yarn build</code>
+</code></pre>
+<h3 id="test">test</h3>
+<pre><code class="lang-bash"><code class="source-code prettyprint">npm test</code>
+</code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">npm test -- --coverage</code>
+</code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">yarn test</code>
+</code></pre>
+<h3 id="version-publish">version &amp; publish</h3>
+<p>For versioning you can use <a href="https://docs.npmjs.com/cli/version">npm version command</a> with <a href="http://semver.org/">semver</a></p>
+<p>It will also</p>
+<ul>
+<li>test</li>
+<li>build</li>
+<li>generate docs</li>
+<li>stage</li>
+<li>commit</li>
+<li>push the tags to tracked remote repository</li>
+<li>push the demo</li>
+<li>if CI will pass also get deployed to NPM</li>
+</ul>
+<pre><code class="lang-bash"><code class="source-code prettyprint">npm version patch -f -m &quot;Backwards-compatible bug fixes&quot;;</code>
+</code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">npm version minor -f -m &quot;Backwards-compatible new functionality&quot;;</code>
+</code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">yarn version major -f -m &quot;Made incompatible API changes&quot;;</code>
+</code></pre>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

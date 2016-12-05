@@ -6,6 +6,22 @@ if (typeof Promise === 'undefined') {
   window.Promise = require('promise/lib/es6-extensions.js');
 }
 
+if (typeof WeakMap === 'undefined') {
+  require('core-js/es6/weak-map');
+}
+
+if (typeof Set === 'undefined') {
+  require('core-js/es6/set');
+}
+
+if (typeof String.fromCodePoint === 'undefined') {
+  // Rejection tracking prevents a common issue where React gets into an
+  // inconsistent state due to an error, but it gets swallowed by a Promise,
+  // and the user has no idea what causes React's erratic future behavior.
+  require('core-js/modules/es6.string.from-code-point');
+}
+
+
 // fetch() polyfill for making API calls.
 require('isomorphic-fetch');
 

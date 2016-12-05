@@ -1,0 +1,14 @@
+{
+  "source": "./src/lib",
+  "excludes": ["\\.test\\.(js|es6)$"],
+  "destination": "./public/docs",
+  "coverage": true,
+  "test": {
+    "type": "mocha",
+    "source": "./src/lib",
+    "includes": ["\\.test\\.(js|es6)$"]
+  },
+  "plugins": [
+    {"name": "esdoc-es7-plugin"}
+  ]
+}

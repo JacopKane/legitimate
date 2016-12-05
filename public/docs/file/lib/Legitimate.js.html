@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/Legitimate.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/JacopKane/legitimate.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Legitimate.js~Legitimate.html">Legitimate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-flattenResponse">flattenResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-locales">locales</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LEGIT">LEGIT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-isText">isText</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Legitimate.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import * as defaultValidators from &apos;./validators&apos;;
+import * as defaultLocales from &apos;./locales&apos;;
+
+const
+  rulesMap = new WeakMap(),
+  stateMap = new WeakMap(),
+  localesMap = new WeakMap(),
+  isPropProper = prop =&gt; {
+    if (typeof prop !== &apos;string&apos;) {
+      throw new Error(&apos;Given prop must be a valid string in order to update&apos;);
+    }
+  };
+
+export const flattenResponse = response =&gt; new Promise((resolve, reject) =&gt; {
+  try {
+    if (typeof response !== &apos;object&apos;) {
+      throw new Error(`${response} should be object`);
+    }
+    if (response instanceof Array === false) {
+      return resolve(response);
+    }
+    resolve([...new Set([].concat(...response))]);
+  } catch (error) {
+    reject(error);
+  }
+});
+
+/**
+ * @class {class} Legitimate
+ * @classdesc Legitimate class to validate given state by updating and validating
+ */
+export class Legitimate {
+
+  /**
+   * @property state
+   * @readonly
+   * @description Returns the current state
+   * @type {object}
+   */
+  get state() {
+    return stateMap.get(this);
+  }
+
+  /**
+   * @property rules
+   * @readonly
+   * @description Returns the current rules
+   * @type {object}
+   */
+  get rules() {
+    return rulesMap.get(this);
+  }
+
+  /**
+   * @property locales
+   * @readonly
+   * @description Returns the current locales
+   * @type {object}
+   */
+  get locales() {
+    return localesMap.get(this);
+  }
+
+  /**
+   * @constructor
+   * @param locales {object} [param=defaultLocales]
+   * @param initialState {object} [initialState={}]
+   */
+  constructor(locales = defaultLocales, initialState = {}) {
+
+    rulesMap.set(this, Object.create(null));
+    stateMap.set(this, initialState);
+    localesMap.set(this, locales);
+  }
+
+  /**
+   * Sets validation functions for given prop
+   * @param prop
+   * @param rulesToAdd
+   * @returns {Legitimate}
+   */
+  setRules(prop = false, ...rulesToAdd) {
+    isPropProper(prop);
+
+    rulesMap.set(this, { ...this.rules, [prop] : [...rulesToAdd] });
+
+    return this;
+  }
+
+  /**
+   * Updates the state by given prop and value
+   * @param prop {string}
+   * @param value {*}
+   * @returns {Legitimate}
+   */
+  update(prop = false, value) {
+    isPropProper(prop);
+
+    stateMap
+      .set(this, { ...this.state, [prop] : value });
+
+    return this;
+  }
+
+  /**
+   * Triggers defined rules for prop
+   * @param prop
+   * @returns {Promise.&lt;*&gt;}
+   */
+  validate(prop) {
+    return new Promise((resolve, reject) =&gt; {
+
+      isPropProper(prop);
+
+      Promise
+        .all(this.rules[prop].map(validator =&gt; validator(this.state[prop], this.locales)))
+        .then(flattenResponse)
+        .then(resolve)
+        .catch(reject);
+
+    });
+  }
+
+  /**
+   * Validate all
+   * @returns {Promise.&lt;*&gt;}
+   */
+  isLegit() {
+    return Promise
+      .all(Object.keys(this.rules).map(::this.validate))
+      .then(flattenResponse)
+      .then(::Promise.resolve)
+      .catch(response =&gt; {
+
+        return flattenResponse(response)
+          .then(::Promise.reject)
+          .catch(::Promise.reject);
+
+      });
+  }
+
+}
+
+export const
+  locales = defaultLocales,
+  validators = defaultValidators;
+
+export default Legitimate;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
