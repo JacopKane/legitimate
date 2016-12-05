@@ -16,7 +16,11 @@ export class Demo extends Component {
           <img src={logo} className="Demo-logo" alt="logo" />
           <h1>{ pkg.name }</h1>
           <p>
-            <a target="blank" alt="npm" href="https://www.npmjs.org/package/legitimate">
+            <a target="_blank" alt="Docs" href="https://jacopkane.github.io/legitimate/docs/">
+              <img src="https://doc.esdoc.org/github.com/JacopKane/legitimate/badge.svg" role="presentation" />
+            </a>
+            &nbsp;
+            <a target="_blank" alt="npm" href="https://www.npmjs.org/package/legitimate">
               <img role="presentation" src="https://img.shields.io/npm/v/legitimate.svg" alt="npm" />
             </a>
             &nbsp;

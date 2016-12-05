@@ -125,7 +125,7 @@ yarn version major -f -m "Made incompatible API changes";
 ```
 
 [docs-image]: https://doc.esdoc.org/github.com/JacopKane/legitimate/badge.svg
-[docs-url]:https://doc.esdoc.org/github.com/JacopKane/legitimate/
+[docs-url]: https://jacopkane.github.io/legitimate/docs/
 [npm-image]: https://img.shields.io/npm/v/legitimate.svg
 [npm-url]:https://www.npmjs.org/package/legitimate
 [codecov-image]: https://codecov.io/gh/jacopkane/legitimate/branch/master/graph/badge.svg

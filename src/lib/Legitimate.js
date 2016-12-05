@@ -11,6 +11,10 @@ const
     }
   };
 
+/**
+ * Union
+ * @param response
+ */
 export const flattenResponse = response => new Promise((resolve, reject) => {
   try {
     if (typeof response !== 'object') {
