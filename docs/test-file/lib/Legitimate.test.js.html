@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/Legitimate.test.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="https://github.com/JacopKane/legitimate.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Legitimate.js~Legitimate.html">Legitimate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-flattenResponse">flattenResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-locales">locales</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LEGIT">LEGIT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-isText">isText</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Legitimate.test.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Legitimate, flattenResponse, locales, validators as defaultValidators } from &apos;./Legitimate&apos;;
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+
+/** @test {Legitimate} */
+describe(&apos;Legitimate&apos;, () =&gt; {
+
+  let legitimate;
+
+  const
+    TEST_OK = value =&gt; `alright value : ${value}`,
+    TEST_NOT_OKAY = value =&gt; `nope value : ${value}`,
+    validators = {
+      ...defaultValidators,
+      mock : jest.fn(),
+      async : (value, locales) =&gt; new Promise((resolve) =&gt; {
+        const timer = setTimeout(() =&gt; {
+          resolve([locales.TEST_OK(value)])
+        }, 200);
+      }),
+      test : (value, locales) =&gt; new Promise((resolve) =&gt; {
+        return resolve([locales.TEST_OK(value)]);
+      }),
+      testFail : (value, locales) =&gt; {
+        return validators.reject([locales.TEST_NOT_OKAY(value)]);
+      }
+    },
+    newLocales = {
+      ...locales,
+      TEST_OK,
+      TEST_NOT_OKAY
+    };
+
+  /** @test {Legitimate#constructor} */
+  it(&apos;can initialize&apos;, () =&gt; {
+    legitimate = new Legitimate(newLocales, {
+      invalidProp : undefined,
+      validProp : &apos;valid prop&apos;
+    });
+    expect(legitimate).toBeInstanceOf(Legitimate);
+  });
+
+  /** @test {Legitimate#constructor} */
+  it(&apos;legitimate instanceof Legitimate&apos;, () =&gt; {
+    expect(legitimate instanceof Legitimate).toBe(true);
+  });
+
+  /** @test {Legitimate#rules} */
+  it(&apos;get rules&apos;, () =&gt; {
+    expect(typeof legitimate.rules).toBe(&apos;object&apos;);
+  });
+
+  /** @test {Legitimate#state} */
+  it(&apos;get state&apos;, () =&gt; {
+    expect(typeof legitimate.state).toBe(&apos;object&apos;);
+  });
+
+  /** @test {Legitimate#locales} */
+  it(&apos;get locales&apos;, () =&gt; {
+    expect(typeof legitimate.locales).toBe(&apos;object&apos;);
+  });
+
+  /** @test {flattenResponse} */
+  describe(&apos;flattenResponse&apos;, () =&gt; {
+
+    it(&apos;resolve array&apos;, cb =&gt; {
+      flattenResponse([1, 2, 3, 1, 2, 3])
+        .then(response =&gt; {
+          expect(response).toEqual([1,2,3]);
+          cb();
+        })
+        .catch(cb.fail)
+    });
+
+    it(&apos;resolve object&apos;, cb =&gt; {
+
+      const error = new Error(&apos;test&apos;);
+
+      flattenResponse(error)
+        .then(response =&gt; {
+          expect(response).toEqual(error);
+          cb();
+        })
+        .catch(cb.fail)
+    });
+
+    it(&apos;reject&apos;, cb =&gt; {
+      flattenResponse(&apos;string&apos;)
+        .then(cb.fail)
+        .catch(cb)
+    });
+
+
+  });
+
+  /** @test {Legitimate#setRules} */
+  it(&apos;setRules&apos;, () =&gt; {
+    legitimate.setRules(&apos;newProp&apos;, validators.test);
+    expect(legitimate.rules[&apos;newProp&apos;]).toContain(validators.test);
+  });
+
+  /** @test {Legitimate#update} */
+  it(&apos;update&apos;, () =&gt; {
+    const value = &apos;updated value&apos;;
+    legitimate.update(&apos;newProp&apos;, value);
+    expect(legitimate.state[&apos;newProp&apos;]).toBe(value);
+  });
+
+  /** @test {Legitimate#validate} */
+  describe(&apos;validate&apos;, () =&gt; {
+
+    it(&apos;mock&apos;, cb =&gt; {
+
+      const
+        mockProp = &apos;mockProp&apos;,
+        mockVal = &apos;mockVal&apos;;
+
+      legitimate
+        .update(mockProp, mockVal)
+        .setRules(mockProp, validators.mock)
+        .validate(mockProp)
+        .then(() =&gt; {
+          expect(validators.mock).toHaveBeenLastCalledWith(mockVal, newLocales);
+          cb();
+        })
+        .catch(cb.fail);
+    });
+
+    it(&apos;real&apos;, cb =&gt; {
+
+      let val = &apos;newPropVal&apos;;
+
+      legitimate
+        .update(&apos;newProp&apos;, val)
+        .setRules(&apos;newProp&apos;, validators.test)
+        .validate(&apos;newProp&apos;)
+        .then(messages =&gt; {
+          expect(messages instanceof Array).toBe(true);
+          expect(messages).toContain(newLocales.TEST_OK(val));
+          cb();
+        })
+        .catch(cb.fail);
+    });
+
+    it(&apos;complex&apos;, cb =&gt; {
+
+      const
+        value = &apos;text&apos;,
+        rules = [
+          validators.isText,
+          validators.notEmpty,
+          (...params) =&gt; validators.minLowerCaseChars(...params, 3)
+        ];
+
+      legitimate
+        .update(&apos;newProp&apos;, value)
+        .setRules(&apos;newProp&apos;, ...rules)
+        .validate(&apos;newProp&apos;)
+        .then(response =&gt; {
+          expect(response instanceof Array).toBe(true);
+          expect(response).toContain(newLocales.LEGIT(value));
+          cb();
+        })
+        .catch(response =&gt; {
+          console.error(response);
+          cb.fail(response);
+        });
+
+    });
+
+  });
+
+  describe(&apos;isLegit&apos;, () =&gt; {
+
+    it(&apos;could resolve&apos;, cb =&gt; {
+
+      let value = &apos;aaaBBBB&apos;;
+
+      const rules = [
+        validators.isText,
+        validators.notEmpty,
+        (...params) =&gt; validators.minLowerCaseChars(...params, 3)
+      ];
+
+      legitimate
+        .update(&apos;newProp&apos;, value)
+        .setRules(&apos;newProp&apos;, ...rules)
+        .validate(&apos;newProp&apos;)
+        .then(response =&gt; {
+
+          expect(response instanceof Array).toBe(true);
+          expect(response).toContain(newLocales.LEGIT(value));
+
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it(&apos;could reject&apos;, cb =&gt; {
+
+      let value = &apos;aaBBBBBBBB&apos;;
+
+      legitimate
+        .update(&apos;newProp&apos;, value)
+        .validate(&apos;newProp&apos;)
+        .then(cb.fail)
+        .catch(response =&gt; {
+          expect(response instanceof Array).toBe(true);
+          expect(response).toContain(newLocales.NOT_LEGIT(value));
+          cb();
+        });
+
+    });
+
+  });
+
+});
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.8)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,0 +1,1819 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Legitimate.js",
+    "memberof": null,
+    "longname": "lib/Legitimate.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import * as defaultValidators from './validators';\nimport * as defaultLocales from './locales';\n\nconst\n  rulesMap = new WeakMap(),\n  stateMap = new WeakMap(),\n  localesMap = new WeakMap(),\n  isPropProper = prop => {\n    if (typeof prop !== 'string') {\n      throw new Error('Given prop must be a valid string in order to update');\n    }\n  };\n\nexport const flattenResponse = response => new Promise((resolve, reject) => {\n  try {\n    if (typeof response !== 'object') {\n      throw new Error(`${response} should be object`);\n    }\n    if (response instanceof Array === false) {\n      return resolve(response);\n    }\n    resolve([...new Set([].concat(...response))]);\n  } catch (error) {\n    reject(error);\n  }\n});\n\n/**\n * @class {class} Legitimate\n * @classdesc Legitimate class to validate given state by updating and validating\n */\nexport class Legitimate {\n\n  /**\n   * @property state\n   * @readonly\n   * @description Returns the current state\n   * @type {object}\n   */\n  get state() {\n    return stateMap.get(this);\n  }\n\n  /**\n   * @property rules\n   * @readonly\n   * @description Returns the current rules\n   * @type {object}\n   */\n  get rules() {\n    return rulesMap.get(this);\n  }\n\n  /**\n   * @property locales\n   * @readonly\n   * @description Returns the current locales\n   * @type {object}\n   */\n  get locales() {\n    return localesMap.get(this);\n  }\n\n  /**\n   * @constructor\n   * @param locales {object} [param=defaultLocales]\n   * @param initialState {object} [initialState={}]\n   */\n  constructor(locales = defaultLocales, initialState = {}) {\n\n    rulesMap.set(this, Object.create(null));\n    stateMap.set(this, initialState);\n    localesMap.set(this, locales);\n  }\n\n  /**\n   *\n   * @param prop\n   * @param rulesToAdd\n   * @returns {Legitimate}\n   */\n  setRules(prop = false, ...rulesToAdd) {\n    isPropProper(prop);\n\n    rulesMap.set(this, { ...this.rules, [prop] : [...rulesToAdd] });\n\n    return this;\n  }\n\n  /**\n   * Updates the state by given prop and value\n   * @param prop {string}\n   * @param value {*}\n   * @returns {Legitimate}\n   */\n  update(prop = false, value) {\n    isPropProper(prop);\n\n    stateMap\n      .set(this, { ...this.state, [prop] : value });\n\n    return this;\n  }\n\n  /**\n   *\n   * @param prop\n   * @returns {Promise.<*>}\n   */\n  validate(prop) {\n    return new Promise((resolve, reject) => {\n\n      isPropProper(prop);\n\n      Promise\n        .all(this.rules[prop].map(validator => validator(this.state[prop], this.locales)))\n        .then(flattenResponse)\n        .then(resolve)\n        .catch(reject);\n\n    });\n  }\n\n  /**\n   * Validate all\n   * @returns {Promise.<*>}\n   */\n  isLegit() {\n    return Promise\n      .all(Object.keys(this.rules).map(::this.validate))\n      .then(flattenResponse)\n      .then(::Promise.resolve)\n      .catch(response => {\n\n        return flattenResponse(response)\n          .then(::Promise.reject)\n          .catch(::Promise.reject);\n\n      });\n  }\n\n}\n\nexport const\n  locales = defaultLocales,\n  validators = defaultValidators;\n\nexport default Legitimate;\n"
+  },
+  {
+    "__docId__": 1,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "rulesMap",
+    "memberof": "lib/Legitimate.js",
+    "longname": "lib/Legitimate.js~rulesMap",
+    "access": null,
+    "export": false,
+    "importPath": "legitimate/lib/Legitimate.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "type": {
+      "types": [
+        "WeakMap"
+      ]
+    }
+  },
+  {
+    "__docId__": 2,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "flattenResponse",
+    "memberof": "lib/Legitimate.js",
+    "longname": "lib/Legitimate.js~flattenResponse",
+    "access": null,
+    "export": true,
+    "importPath": "legitimate/lib/Legitimate.js",
+    "importStyle": "{flattenResponse}",
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 3,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Legitimate",
+    "memberof": "lib/Legitimate.js",
+    "longname": "lib/Legitimate.js~Legitimate",
+    "access": null,
+    "export": true,
+    "importPath": "legitimate/lib/Legitimate.js",
+    "importStyle": "{Legitimate}",
+    "description": "",
+    "lineNumber": 32,
+    "unknown": [
+      {
+        "tagName": "@class",
+        "tagValue": "{class} Legitimate"
+      },
+      {
+        "tagName": "@classdesc",
+        "tagValue": "Legitimate class to validate given state by updating and validating"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 4,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "state",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#state",
+    "access": null,
+    "description": "",
+    "lineNumber": 40,
+    "unknown": [
+      {
+        "tagName": "@readonly",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Returns the current state"
+      }
+    ],
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "nullable": null,
+      "types": [
+        "object"
+      ],
+      "spread": false,
+      "description": null
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 5,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "rules",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#rules",
+    "access": null,
+    "description": "",
+    "lineNumber": 50,
+    "unknown": [
+      {
+        "tagName": "@readonly",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Returns the current rules"
+      }
+    ],
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rules",
+        "description": ""
+      }
+    ],
+    "type": {
+      "nullable": null,
+      "types": [
+        "object"
+      ],
+      "spread": false,
+      "description": null
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 6,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "locales",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#locales",
+    "access": null,
+    "description": "",
+    "lineNumber": 60,
+    "unknown": [
+      {
+        "tagName": "@readonly",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@description",
+        "tagValue": "Returns the current locales"
+      }
+    ],
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "locales",
+        "description": ""
+      }
+    ],
+    "type": {
+      "nullable": null,
+      "types": [
+        "object"
+      ],
+      "spread": false,
+      "description": null
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 7,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 69,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "locales",
+        "description": "{object} [param=defaultLocales]"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "initialState",
+        "description": "{object} [initialState={}]"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 8,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setRules",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#setRules",
+    "access": null,
+    "description": "",
+    "lineNumber": 82,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Legitimate}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "prop",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rulesToAdd",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Legitimate"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 9,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "update",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#update",
+    "access": null,
+    "description": "Updates the state by given prop and value",
+    "lineNumber": 96,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Legitimate}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "prop",
+        "description": "{string}"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "value",
+        "description": "{*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Legitimate"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 10,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "validate",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#validate",
+    "access": null,
+    "description": "",
+    "lineNumber": 110,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Promise.<*>}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "prop",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise.<*>"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 11,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "isLegit",
+    "memberof": "lib/Legitimate.js~Legitimate",
+    "longname": "lib/Legitimate.js~Legitimate#isLegit",
+    "access": null,
+    "description": "Validate all",
+    "lineNumber": 128,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Promise.<*>}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise.<*>"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 12,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "locales",
+    "memberof": "lib/Legitimate.js",
+    "longname": "lib/Legitimate.js~locales",
+    "access": null,
+    "export": true,
+    "importPath": "legitimate/lib/Legitimate.js",
+    "importStyle": "{locales}",
+    "description": null,
+    "lineNumber": 144,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/locales.js",
+    "memberof": null,
+    "longname": "lib/locales.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "const\n  okHand = String.fromCodePoint(0x1F44C),\n  crossMark = String.fromCodePoint(0x274C);\n\nexport const\n\n  LEGIT = () => okHand,\n\n  NOT_LEGIT = () => crossMark,\n\n  EMPTY = () => `${crossMark} Could not be empty`,\n\n  TOO_SHORT = (value, length) => `${crossMark} Must be longer than ${length} characters`;\n"
+  },
+  {
+    "__docId__": 14,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "okHand",
+    "memberof": "lib/locales.js",
+    "longname": "lib/locales.js~okHand",
+    "access": null,
+    "export": false,
+    "importPath": "legitimate/lib/locales.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 15,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "LEGIT",
+    "memberof": "lib/locales.js",
+    "longname": "lib/locales.js~LEGIT",
+    "access": null,
+    "export": true,
+    "importPath": "legitimate/lib/locales.js",
+    "importStyle": "{LEGIT}",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 16,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/validators.js",
+    "memberof": null,
+    "longname": "lib/validators.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import * as defaultLocales from './locales';\n\nexport const\n\n  isText = (value, locales = defaultLocales) => new Promise((resolve, reject) => typeof value === 'string' ?\n    resolve([locales.LEGIT(value)]) : reject([locales.NOT_LEGIT(value)])),\n\n  notEmpty = (value, locales = defaultLocales) => isText(value, locales)\n    .then(response => value.length > 0 ?\n        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY]))\n    .catch(response => Promise.reject([response, locales.NOT_LEGIT(value)])),\n\n  minLowerCaseChars = (value, locales = defaultLocales, count = 1) => isText(value, locales)\n    .then(response => {\n\n      const pattern = new RegExp(/\\p{Lowercase_Letter}/u, 'g');\n\n      if (value.match(pattern).length >= count) {\n        return Promise.resolve([...response, locales.LEGIT(value, count)]);\n      }\n      return Promise.reject([locales.TOO_SHORT(value, count)])\n    })\n    .catch(response => Promise.reject([response, locales.NOT_LEGIT(value, count)]));\n"
+  },
+  {
+    "__docId__": 17,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "isText",
+    "memberof": "lib/validators.js",
+    "longname": "lib/validators.js~isText",
+    "access": null,
+    "export": true,
+    "importPath": "legitimate/lib/validators.js",
+    "importStyle": "{isText}",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 19,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 20,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 21,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 22,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 23,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 24,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 25,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 26,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 27,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 28,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 29,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 30,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 31,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 32,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 33,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 34,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 35,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 36,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 37,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 38,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 39,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 40,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 41,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 42,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 43,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 44,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 45,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 46,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 47,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 48,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 49,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 50,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 51,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 52,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 53,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 54,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 55,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 56,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 57,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 58,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 59,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 60,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 61,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 62,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 63,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 64,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 65,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 67,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 68,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 69,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 70,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 71,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 72,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 73,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 74,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 75,
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "lib/Legitimate.test.js",
+    "memberof": null,
+    "longname": "lib/Legitimate.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Legitimate, flattenResponse, locales, validators as defaultValidators } from './Legitimate';\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;\n\n/** @test {Legitimate} */\ndescribe('Legitimate', () => {\n\n  let legitimate;\n\n  const\n    TEST_OK = value => `alright value : ${value}`,\n    TEST_NOT_OKAY = value => `nope value : ${value}`,\n    validators = {\n      ...defaultValidators,\n      mock : jest.fn(),\n      async : (value, locales) => new Promise((resolve) => {\n        const timer = setTimeout(() => {\n          resolve([locales.TEST_OK(value)])\n        }, 200);\n      }),\n      test : (value, locales) => new Promise((resolve) => {\n        return resolve([locales.TEST_OK(value)]);\n      }),\n      testFail : (value, locales) => {\n        return validators.reject([locales.TEST_NOT_OKAY(value)]);\n      }\n    },\n    newLocales = {\n      ...locales,\n      TEST_OK,\n      TEST_NOT_OKAY\n    };\n\n  /** @test {Legitimate#constructor} */\n  it('can initialize', () => {\n    legitimate = new Legitimate(newLocales, {\n      invalidProp : undefined,\n      validProp : 'valid prop'\n    });\n    expect(legitimate).toBeInstanceOf(Legitimate);\n  });\n\n  /** @test {Legitimate#constructor} */\n  it('legitimate instanceof Legitimate', () => {\n    expect(legitimate instanceof Legitimate).toBe(true);\n  });\n\n  /** @test {Legitimate#rules} */\n  it('get rules', () => {\n    expect(typeof legitimate.rules).toBe('object');\n  });\n\n  /** @test {Legitimate#state} */\n  it('get state', () => {\n    expect(typeof legitimate.state).toBe('object');\n  });\n\n  /** @test {Legitimate#locales} */\n  it('get locales', () => {\n    expect(typeof legitimate.locales).toBe('object');\n  });\n\n  /** @test {flattenResponse} */\n  describe('flattenResponse', () => {\n\n    it('resolve array', cb => {\n      flattenResponse([1, 2, 3, 1, 2, 3])\n        .then(response => {\n          expect(response).toEqual([1,2,3]);\n          cb();\n        })\n        .catch(cb.fail)\n    });\n\n    it('resolve object', cb => {\n\n      const error = new Error('test');\n\n      flattenResponse(error)\n        .then(response => {\n          expect(response).toEqual(error);\n          cb();\n        })\n        .catch(cb.fail)\n    });\n\n    it('reject', cb => {\n      flattenResponse('string')\n        .then(cb.fail)\n        .catch(cb)\n    });\n\n\n  });\n\n  /** @test {Legitimate#setRules} */\n  it('setRules', () => {\n    legitimate.setRules('newProp', validators.test);\n    expect(legitimate.rules['newProp']).toContain(validators.test);\n  });\n\n  /** @test {Legitimate#update} */\n  it('update', () => {\n    const value = 'updated value';\n    legitimate.update('newProp', value);\n    expect(legitimate.state['newProp']).toBe(value);\n  });\n\n  /** @test {Legitimate#validate} */\n  describe('validate', () => {\n\n    it('mock', cb => {\n\n      const\n        mockProp = 'mockProp',\n        mockVal = 'mockVal';\n\n      legitimate\n        .update(mockProp, mockVal)\n        .setRules(mockProp, validators.mock)\n        .validate(mockProp)\n        .then(() => {\n          expect(validators.mock).toHaveBeenLastCalledWith(mockVal, newLocales);\n          cb();\n        })\n        .catch(cb.fail);\n    });\n\n    it('real', cb => {\n\n      let val = 'newPropVal';\n\n      legitimate\n        .update('newProp', val)\n        .setRules('newProp', validators.test)\n        .validate('newProp')\n        .then(messages => {\n          expect(messages instanceof Array).toBe(true);\n          expect(messages).toContain(newLocales.TEST_OK(val));\n          cb();\n        })\n        .catch(cb.fail);\n    });\n\n    it('complex', cb => {\n\n      const\n        value = 'text',\n        rules = [\n          validators.isText,\n          validators.notEmpty,\n          (...params) => validators.minLowerCaseChars(...params, 3)\n        ];\n\n      legitimate\n        .update('newProp', value)\n        .setRules('newProp', ...rules)\n        .validate('newProp')\n        .then(response => {\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(newLocales.LEGIT(value));\n          cb();\n        })\n        .catch(response => {\n          console.error(response);\n          cb.fail(response);\n        });\n\n    });\n\n  });\n\n  describe('isLegit', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'aaaBBBB';\n\n      const rules = [\n        validators.isText,\n        validators.notEmpty,\n        (...params) => validators.minLowerCaseChars(...params, 3)\n      ];\n\n      legitimate\n        .update('newProp', value)\n        .setRules('newProp', ...rules)\n        .validate('newProp')\n        .then(response => {\n\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(newLocales.LEGIT(value));\n\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'aaBBBBBBBB';\n\n      legitimate\n        .update('newProp', value)\n        .validate('newProp')\n        .then(cb.fail)\n        .catch(response => {\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(newLocales.NOT_LEGIT(value));\n          cb();\n        });\n\n    });\n\n  });\n\n});\n"
+  },
+  {
+    "__docId__": 76,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe0",
+    "testId": 0,
+    "memberof": "lib/Legitimate.test.js",
+    "testDepth": 0,
+    "longname": "lib/Legitimate.test.js~describe0",
+    "access": null,
+    "description": "Legitimate",
+    "lineNumber": 6,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate"
+    ]
+  },
+  {
+    "__docId__": 77,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it1",
+    "testId": 1,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it1",
+    "access": null,
+    "description": "can initialize",
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#constructor}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#constructor"
+    ]
+  },
+  {
+    "__docId__": 78,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it2",
+    "testId": 2,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it2",
+    "access": null,
+    "description": "legitimate instanceof Legitimate",
+    "lineNumber": 44,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#constructor}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#constructor"
+    ]
+  },
+  {
+    "__docId__": 79,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it3",
+    "testId": 3,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it3",
+    "access": null,
+    "description": "get rules",
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#rules}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#rules"
+    ]
+  },
+  {
+    "__docId__": 80,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it4",
+    "testId": 4,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it4",
+    "access": null,
+    "description": "get state",
+    "lineNumber": 54,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#state}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#state"
+    ]
+  },
+  {
+    "__docId__": 81,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it5",
+    "testId": 5,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it5",
+    "access": null,
+    "description": "get locales",
+    "lineNumber": 59,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#locales}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#locales"
+    ]
+  },
+  {
+    "__docId__": 82,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe6",
+    "testId": 6,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.describe6",
+    "access": null,
+    "description": "flattenResponse",
+    "lineNumber": 64,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{flattenResponse}"
+      }
+    ],
+    "testTargets": [
+      "flattenResponse"
+    ]
+  },
+  {
+    "__docId__": 83,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it7",
+    "testId": 7,
+    "memberof": "lib/Legitimate.test.js~describe0.describe6",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe6.it7",
+    "access": null,
+    "description": "resolve array",
+    "lineNumber": 66
+  },
+  {
+    "__docId__": 84,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it8",
+    "testId": 8,
+    "memberof": "lib/Legitimate.test.js~describe0.describe6",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe6.it8",
+    "access": null,
+    "description": "resolve object",
+    "lineNumber": 75
+  },
+  {
+    "__docId__": 85,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it9",
+    "testId": 9,
+    "memberof": "lib/Legitimate.test.js~describe0.describe6",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe6.it9",
+    "access": null,
+    "description": "reject",
+    "lineNumber": 87
+  },
+  {
+    "__docId__": 86,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it10",
+    "testId": 10,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it10",
+    "access": null,
+    "description": "setRules",
+    "lineNumber": 97,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#setRules}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#setRules"
+    ]
+  },
+  {
+    "__docId__": 87,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it11",
+    "testId": 11,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it11",
+    "access": null,
+    "description": "update",
+    "lineNumber": 103,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#update}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#update"
+    ]
+  },
+  {
+    "__docId__": 88,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe12",
+    "testId": 12,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.describe12",
+    "access": null,
+    "description": "validate",
+    "lineNumber": 110,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#validate}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#validate"
+    ]
+  },
+  {
+    "__docId__": 89,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it13",
+    "testId": 13,
+    "memberof": "lib/Legitimate.test.js~describe0.describe12",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe12.it13",
+    "access": null,
+    "description": "mock",
+    "lineNumber": 112
+  },
+  {
+    "__docId__": 90,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it14",
+    "testId": 14,
+    "memberof": "lib/Legitimate.test.js~describe0.describe12",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe12.it14",
+    "access": null,
+    "description": "real",
+    "lineNumber": 129
+  },
+  {
+    "__docId__": 91,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it15",
+    "testId": 15,
+    "memberof": "lib/Legitimate.test.js~describe0.describe12",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe12.it15",
+    "access": null,
+    "description": "complex",
+    "lineNumber": 145
+  },
+  {
+    "__docId__": 92,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe16",
+    "testId": 16,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.describe16",
+    "access": null,
+    "description": "isLegit",
+    "lineNumber": 173
+  },
+  {
+    "__docId__": 93,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it17",
+    "testId": 17,
+    "memberof": "lib/Legitimate.test.js~describe0.describe16",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe16.it17",
+    "access": null,
+    "description": "could resolve",
+    "lineNumber": 175
+  },
+  {
+    "__docId__": 94,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it18",
+    "testId": 18,
+    "memberof": "lib/Legitimate.test.js~describe0.describe16",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe16.it18",
+    "access": null,
+    "description": "could reject",
+    "lineNumber": 200
+  },
+  {
+    "__docId__": 95,
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "lib/locales.test.js",
+    "memberof": null,
+    "longname": "lib/locales.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { locales } from './Legitimate'\n\ndescribe('locales', () => {\n\n  it('should be object', () => {\n    expect(typeof locales).toBe('object');\n  });\n\n  it('should have proper properties', () => {\n    expect(Object.keys(locales).map(localeProp => {\n      expect(typeof locales[localeProp]).toBe('function');\n\n      let locale = locales[localeProp]('a', 'b', 'c', 'd', 'e', 'f');\n      expect(typeof locale).toBe('string');\n\n    }) instanceof Array).toBe(true);\n  });\n\n});\n"
+  },
+  {
+    "__docId__": 96,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe19",
+    "testId": 19,
+    "memberof": "lib/locales.test.js",
+    "testDepth": 0,
+    "longname": "lib/locales.test.js~describe19",
+    "access": null,
+    "description": "locales",
+    "lineNumber": 3
+  },
+  {
+    "__docId__": 97,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it20",
+    "testId": 20,
+    "memberof": "lib/locales.test.js~describe19",
+    "testDepth": 1,
+    "longname": "lib/locales.test.js~describe19.it20",
+    "access": null,
+    "description": "should be object",
+    "lineNumber": 5
+  },
+  {
+    "__docId__": 98,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it21",
+    "testId": 21,
+    "memberof": "lib/locales.test.js~describe19",
+    "testDepth": 1,
+    "longname": "lib/locales.test.js~describe19.it21",
+    "access": null,
+    "description": "should have proper properties",
+    "lineNumber": 9
+  },
+  {
+    "__docId__": 99,
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "lib/validators.test.js",
+    "memberof": null,
+    "longname": "lib/validators.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { locales, validators, flattenResponse } from './Legitimate';\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;\n\ndescribe('validators', () => {\n\n  /** @test {validators} */\n  it('must be object', () => {\n    expect(typeof validators).toBe('object');\n  });\n\n  /** @test {validators#isText} */\n  describe('isText', () => {\n\n    it('could resolve', cb => {\n\n      const testText = 'Just TESTING';\n\n      validators\n        .isText(testText)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(testText));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .isText(null)\n        .then(flattenResponse)\n        .then(response => {\n          cb.fail(response);\n        })\n        .catch((...response) => {\n\n          flattenResponse(...response)\n            .then(response => {\n              expect(response).toContain(locales.NOT_LEGIT(null));\n              cb();\n            })\n            .catch(cb.fail)\n        });\n\n    });\n\n  });\n\n  /** @test {validators#notEmpty} */\n  describe('notEmpty', () => {\n\n    it('could resolve', cb => {\n\n      validators\n        .notEmpty('string')\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT('string'));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .notEmpty('')\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NOT_LEGIT(''));\n          cb();\n        });\n\n    });\n\n  })\n\n});\n"
+  },
+  {
+    "__docId__": 100,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe22",
+    "testId": 22,
+    "memberof": "lib/validators.test.js",
+    "testDepth": 0,
+    "longname": "lib/validators.test.js~describe22",
+    "access": null,
+    "description": "validators",
+    "lineNumber": 5
+  },
+  {
+    "__docId__": 101,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it23",
+    "testId": 23,
+    "memberof": "lib/validators.test.js~describe22",
+    "testDepth": 1,
+    "longname": "lib/validators.test.js~describe22.it23",
+    "access": null,
+    "description": "must be object",
+    "lineNumber": 8,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{validators}"
+      }
+    ],
+    "testTargets": [
+      "validators"
+    ]
+  },
+  {
+    "__docId__": 102,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe24",
+    "testId": 24,
+    "memberof": "lib/validators.test.js~describe22",
+    "testDepth": 1,
+    "longname": "lib/validators.test.js~describe22.describe24",
+    "access": null,
+    "description": "isText",
+    "lineNumber": 13,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{validators#isText}"
+      }
+    ],
+    "testTargets": [
+      "validators#isText"
+    ]
+  },
+  {
+    "__docId__": 103,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it25",
+    "testId": 25,
+    "memberof": "lib/validators.test.js~describe22.describe24",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe22.describe24.it25",
+    "access": null,
+    "description": "could resolve",
+    "lineNumber": 15
+  },
+  {
+    "__docId__": 104,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it26",
+    "testId": 26,
+    "memberof": "lib/validators.test.js~describe22.describe24",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe22.describe24.it26",
+    "access": null,
+    "description": "could reject",
+    "lineNumber": 30
+  },
+  {
+    "__docId__": 105,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe27",
+    "testId": 27,
+    "memberof": "lib/validators.test.js~describe22",
+    "testDepth": 1,
+    "longname": "lib/validators.test.js~describe22.describe27",
+    "access": null,
+    "description": "notEmpty",
+    "lineNumber": 53,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{validators#notEmpty}"
+      }
+    ],
+    "testTargets": [
+      "validators#notEmpty"
+    ]
+  },
+  {
+    "__docId__": 106,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it28",
+    "testId": 28,
+    "memberof": "lib/validators.test.js~describe22.describe27",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe22.describe27.it28",
+    "access": null,
+    "description": "could resolve",
+    "lineNumber": 55
+  },
+  {
+    "__docId__": 107,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it29",
+    "testId": 29,
+    "memberof": "lib/validators.test.js~describe22.describe27",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe22.describe27.it29",
+    "access": null,
+    "description": "could reject",
+    "lineNumber": 68
+  }
+]
