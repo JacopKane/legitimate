@@ -69,7 +69,7 @@ describe(&apos;Legitimate&apos;, () =&gt; {
         return validators.reject([locales.TEST_NOT_OKAY(value)]);
       }
     },
-    newLocales = {
+    testLocales = {
       ...locales,
       TEST_OK,
       TEST_NOT_OKAY
@@ -77,7 +77,7 @@ describe(&apos;Legitimate&apos;, () =&gt; {
 
   /** @test {Legitimate#constructor} */
   it(&apos;can initialize&apos;, () =&gt; {
-    legitimate = new Legitimate(newLocales, {
+    legitimate = new Legitimate(testLocales, {
       invalidProp : undefined,
       validProp : &apos;valid prop&apos;
     });
@@ -134,7 +134,15 @@ describe(&apos;Legitimate&apos;, () =&gt; {
         .catch(cb)
     });
 
+  });
 
+  it(&apos;fails without string props&apos;, cb =&gt; {
+    expect(() =&gt; legitimate.setRules(null)).toThrow();
+    expect(() =&gt; legitimate.update(null)).toThrow();
+    legitimate
+      .validate(null)
+      .then(cb.fail)
+      .catch(cb);
   });
 
   /** @test {Legitimate#setRules} */
@@ -164,7 +172,7 @@ describe(&apos;Legitimate&apos;, () =&gt; {
         .setRules(mockProp, validators.mock)
         .validate(mockProp)
         .then(() =&gt; {
-          expect(validators.mock).toHaveBeenLastCalledWith(mockVal, newLocales);
+          expect(validators.mock).toHaveBeenLastCalledWith(mockVal, testLocales);
           cb();
         })
         .catch(cb.fail);
@@ -180,35 +188,54 @@ describe(&apos;Legitimate&apos;, () =&gt; {
         .validate(&apos;newProp&apos;)
         .then(messages =&gt; {
           expect(messages instanceof Array).toBe(true);
-          expect(messages).toContain(newLocales.TEST_OK(val));
+          expect(messages).toContain(testLocales.TEST_OK(val));
           cb();
         })
         .catch(cb.fail);
     });
 
-    it(&apos;complex&apos;, cb =&gt; {
+    describe(&apos;complex&apos;, () =&gt; {
 
-      const
-        value = &apos;text&apos;,
-        rules = [
-          validators.isText,
-          validators.notEmpty,
-          (...params) =&gt; validators.minLowerCaseChars(...params, 3)
-        ];
+      it(&apos;resolve&apos;, cb =&gt; {
 
-      legitimate
-        .update(&apos;newProp&apos;, value)
-        .setRules(&apos;newProp&apos;, ...rules)
-        .validate(&apos;newProp&apos;)
-        .then(response =&gt; {
-          expect(response instanceof Array).toBe(true);
-          expect(response).toContain(newLocales.LEGIT(value));
-          cb();
-        })
-        .catch(response =&gt; {
-          console.error(response);
-          cb.fail(response);
-        });
+        const
+          value = &apos;aaaBBBB&apos;,
+          rules = [
+            validators.isText,
+            validators.notEmpty,
+            (...params) =&gt; validators.minLowerCaseChars(...params, 3)
+          ];
+
+        legitimate
+          .update(&apos;newProp&apos;, value)
+          .setRules(&apos;newProp&apos;, ...rules)
+          .validate(&apos;newProp&apos;)
+          .then(response =&gt; {
+            expect(response instanceof Array).toBe(true);
+            expect(response).toContain(testLocales.LEGIT(value));
+            cb();
+          })
+          .catch(cb.fail);
+
+
+
+      });
+
+      it(&apos;reject&apos;, cb =&gt; {
+
+        let value = &apos;aaBBBBBBBB&apos;;
+
+        legitimate
+          .update(&apos;newProp&apos;, value)
+          .validate(&apos;newProp&apos;)
+          .then(cb.fail)
+          .catch(response =&gt; {
+            expect(response instanceof Array).toBe(true);
+            expect(response).toContain(testLocales.NEED_MORE_LOWER_CASE(value, 3));
+            cb();
+          });
+
+      });
 
     });
 
@@ -216,44 +243,38 @@ describe(&apos;Legitimate&apos;, () =&gt; {
 
   describe(&apos;isLegit&apos;, () =&gt; {
 
-    it(&apos;could resolve&apos;, cb =&gt; {
+    it(&apos;could reject&apos;, cb =&gt; {
 
-      let value = &apos;aaaBBBB&apos;;
-
-      const rules = [
-        validators.isText,
-        validators.notEmpty,
-        (...params) =&gt; validators.minLowerCaseChars(...params, 3)
-      ];
+      const value = legitimate.state.newProp;
 
       legitimate
-        .update(&apos;newProp&apos;, value)
-        .setRules(&apos;newProp&apos;, ...rules)
-        .validate(&apos;newProp&apos;)
-        .then(response =&gt; {
-
+        .isLegit()
+        .then(error =&gt; {
+          cb.fail(error);
+        })
+        .catch(response =&gt; {
           expect(response instanceof Array).toBe(true);
-          expect(response).toContain(newLocales.LEGIT(value));
+          expect(response).toContain(testLocales.NEED_MORE_LOWER_CASE(value, 3));
 
           cb();
-        })
-        .catch(cb.fail);
+        });
 
     });
 
-    it(&apos;could reject&apos;, cb =&gt; {
+    it(&apos;could resolve&apos;, cb =&gt; {
 
-      let value = &apos;aaBBBBBBBB&apos;;
+      const
+        value = &apos;aaaBBBB&apos;;
 
       legitimate
         .update(&apos;newProp&apos;, value)
-        .validate(&apos;newProp&apos;)
-        .then(cb.fail)
-        .catch(response =&gt; {
+        .isLegit()
+        .then(response =&gt; {
           expect(response instanceof Array).toBe(true);
-          expect(response).toContain(newLocales.NOT_LEGIT(value));
+          expect(response).toContain(testLocales.LEGIT(value));
           cb();
-        });
+        })
+        .catch(cb.fail);
 
     });
 

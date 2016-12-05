@@ -10,7 +10,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import * as defaultValidators from './validators';\nimport * as defaultLocales from './locales';\n\nconst\n  rulesMap = new WeakMap(),\n  stateMap = new WeakMap(),\n  localesMap = new WeakMap(),\n  isPropProper = prop => {\n    if (typeof prop !== 'string') {\n      throw new Error('Given prop must be a valid string in order to update');\n    }\n  };\n\nexport const flattenResponse = response => new Promise((resolve, reject) => {\n  try {\n    if (typeof response !== 'object') {\n      throw new Error(`${response} should be object`);\n    }\n    if (response instanceof Array === false) {\n      return resolve(response);\n    }\n    resolve([...new Set([].concat(...response))]);\n  } catch (error) {\n    reject(error);\n  }\n});\n\n/**\n * @class {class} Legitimate\n * @classdesc Legitimate class to validate given state by updating and validating\n */\nexport class Legitimate {\n\n  /**\n   * @property state\n   * @readonly\n   * @description Returns the current state\n   * @type {object}\n   */\n  get state() {\n    return stateMap.get(this);\n  }\n\n  /**\n   * @property rules\n   * @readonly\n   * @description Returns the current rules\n   * @type {object}\n   */\n  get rules() {\n    return rulesMap.get(this);\n  }\n\n  /**\n   * @property locales\n   * @readonly\n   * @description Returns the current locales\n   * @type {object}\n   */\n  get locales() {\n    return localesMap.get(this);\n  }\n\n  /**\n   * @constructor\n   * @param locales {object} [param=defaultLocales]\n   * @param initialState {object} [initialState={}]\n   */\n  constructor(locales = defaultLocales, initialState = {}) {\n\n    rulesMap.set(this, Object.create(null));\n    stateMap.set(this, initialState);\n    localesMap.set(this, locales);\n  }\n\n  /**\n   *\n   * @param prop\n   * @param rulesToAdd\n   * @returns {Legitimate}\n   */\n  setRules(prop = false, ...rulesToAdd) {\n    isPropProper(prop);\n\n    rulesMap.set(this, { ...this.rules, [prop] : [...rulesToAdd] });\n\n    return this;\n  }\n\n  /**\n   * Updates the state by given prop and value\n   * @param prop {string}\n   * @param value {*}\n   * @returns {Legitimate}\n   */\n  update(prop = false, value) {\n    isPropProper(prop);\n\n    stateMap\n      .set(this, { ...this.state, [prop] : value });\n\n    return this;\n  }\n\n  /**\n   *\n   * @param prop\n   * @returns {Promise.<*>}\n   */\n  validate(prop) {\n    return new Promise((resolve, reject) => {\n\n      isPropProper(prop);\n\n      Promise\n        .all(this.rules[prop].map(validator => validator(this.state[prop], this.locales)))\n        .then(flattenResponse)\n        .then(resolve)\n        .catch(reject);\n\n    });\n  }\n\n  /**\n   * Validate all\n   * @returns {Promise.<*>}\n   */\n  isLegit() {\n    return Promise\n      .all(Object.keys(this.rules).map(::this.validate))\n      .then(flattenResponse)\n      .then(::Promise.resolve)\n      .catch(response => {\n\n        return flattenResponse(response)\n          .then(::Promise.reject)\n          .catch(::Promise.reject);\n\n      });\n  }\n\n}\n\nexport const\n  locales = defaultLocales,\n  validators = defaultValidators;\n\nexport default Legitimate;\n"
+    "content": "import * as defaultValidators from './validators';\nimport * as defaultLocales from './locales';\n\nconst\n  rulesMap = new WeakMap(),\n  stateMap = new WeakMap(),\n  localesMap = new WeakMap(),\n  isPropProper = prop => {\n    if (typeof prop !== 'string') {\n      throw new Error('Given prop must be a valid string in order to update');\n    }\n  };\n\nexport const flattenResponse = response => new Promise((resolve, reject) => {\n  try {\n    if (typeof response !== 'object') {\n      throw new Error(`${response} should be object`);\n    }\n    if (response instanceof Array === false) {\n      return resolve(response);\n    }\n    resolve([...new Set([].concat(...response))]);\n  } catch (error) {\n    reject(error);\n  }\n});\n\n/**\n * @class {class} Legitimate\n * @classdesc Legitimate class to validate given state by updating and validating\n */\nexport class Legitimate {\n\n  /**\n   * @property state\n   * @readonly\n   * @description Returns the current state\n   * @type {object}\n   */\n  get state() {\n    return stateMap.get(this);\n  }\n\n  /**\n   * @property rules\n   * @readonly\n   * @description Returns the current rules\n   * @type {object}\n   */\n  get rules() {\n    return rulesMap.get(this);\n  }\n\n  /**\n   * @property locales\n   * @readonly\n   * @description Returns the current locales\n   * @type {object}\n   */\n  get locales() {\n    return localesMap.get(this);\n  }\n\n  /**\n   * @constructor\n   * @param locales {object} [param=defaultLocales]\n   * @param initialState {object} [initialState={}]\n   */\n  constructor(locales = defaultLocales, initialState = {}) {\n\n    rulesMap.set(this, Object.create(null));\n    stateMap.set(this, initialState);\n    localesMap.set(this, locales);\n  }\n\n  /**\n   * Sets validation functions for given prop\n   * @param prop\n   * @param rulesToAdd\n   * @returns {Legitimate}\n   */\n  setRules(prop = false, ...rulesToAdd) {\n    isPropProper(prop);\n\n    rulesMap.set(this, { ...this.rules, [prop] : [...rulesToAdd] });\n\n    return this;\n  }\n\n  /**\n   * Updates the state by given prop and value\n   * @param prop {string}\n   * @param value {*}\n   * @returns {Legitimate}\n   */\n  update(prop = false, value) {\n    isPropProper(prop);\n\n    stateMap\n      .set(this, { ...this.state, [prop] : value });\n\n    return this;\n  }\n\n  /**\n   * Triggers defined rules for prop\n   * @param prop\n   * @returns {Promise.<*>}\n   */\n  validate(prop) {\n    return new Promise((resolve, reject) => {\n\n      isPropProper(prop);\n\n      Promise\n        .all(this.rules[prop].map(validator => validator(this.state[prop], this.locales)))\n        .then(flattenResponse)\n        .then(resolve)\n        .catch(reject);\n\n    });\n  }\n\n  /**\n   * Validate all\n   * @returns {Promise.<*>}\n   */\n  isLegit() {\n    return Promise\n      .all(Object.keys(this.rules).map(::this.validate))\n      .then(flattenResponse)\n      .then(::Promise.resolve)\n      .catch(response => {\n\n        return flattenResponse(response)\n          .then(::Promise.reject)\n          .catch(::Promise.reject);\n\n      });\n  }\n\n}\n\nexport const\n  locales = defaultLocales,\n  validators = defaultValidators;\n\nexport default Legitimate;\n"
   },
   {
     "__docId__": 1,
@@ -259,7 +259,7 @@
     "memberof": "lib/Legitimate.js~Legitimate",
     "longname": "lib/Legitimate.js~Legitimate#setRules",
     "access": null,
-    "description": "",
+    "description": "Sets validation functions for given prop",
     "lineNumber": 82,
     "unknown": [
       {
@@ -357,7 +357,7 @@
     "memberof": "lib/Legitimate.js~Legitimate",
     "longname": "lib/Legitimate.js~Legitimate#validate",
     "access": null,
-    "description": "",
+    "description": "Triggers defined rules for prop",
     "lineNumber": 110,
     "unknown": [
       {
@@ -447,7 +447,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const\n  okHand = String.fromCodePoint(0x1F44C),\n  crossMark = String.fromCodePoint(0x274C);\n\nexport const\n\n  LEGIT = () => okHand,\n\n  NOT_LEGIT = () => crossMark,\n\n  EMPTY = () => `${crossMark} Could not be empty`,\n\n  TOO_SHORT = (value, length) => `${crossMark} Must be longer than ${length} characters`;\n"
+    "content": "const\n  okHand = String.fromCodePoint(0x1F44C),\n  crossMark = String.fromCodePoint(0x274C);\n\nexport const\n\n  LEGIT = () => okHand,\n\n  NOT_LEGIT = () => crossMark,\n\n  EMPTY = () => `Could not be empty`,\n\n  TOO_SHORT = (value, length) => `Must be longer than ${length} characters`,\n\n  NEED_MORE_LOWER_CASE = (value, min) => `At least ${min} small case`;\n"
   },
   {
     "__docId__": 14,
@@ -502,7 +502,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import * as defaultLocales from './locales';\n\nexport const\n\n  isText = (value, locales = defaultLocales) => new Promise((resolve, reject) => typeof value === 'string' ?\n    resolve([locales.LEGIT(value)]) : reject([locales.NOT_LEGIT(value)])),\n\n  notEmpty = (value, locales = defaultLocales) => isText(value, locales)\n    .then(response => value.length > 0 ?\n        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY]))\n    .catch(response => Promise.reject([response, locales.NOT_LEGIT(value)])),\n\n  minLowerCaseChars = (value, locales = defaultLocales, count = 1) => isText(value, locales)\n    .then(response => {\n\n      const pattern = new RegExp(/\\p{Lowercase_Letter}/u, 'g');\n\n      if (value.match(pattern).length >= count) {\n        return Promise.resolve([...response, locales.LEGIT(value, count)]);\n      }\n      return Promise.reject([locales.TOO_SHORT(value, count)])\n    })\n    .catch(response => Promise.reject([response, locales.NOT_LEGIT(value, count)]));\n"
+    "content": "import * as defaultLocales from './locales';\n\nexport const\n\n  /**\n   *\n   * @param value\n   * @param locales\n   */\n  isText = (value, locales = defaultLocales) => new Promise((resolve, reject) => typeof value === 'string' ?\n    resolve([locales.LEGIT(value)]) : reject([locales.NOT_LEGIT(value)])),\n\n  /**\n   *\n   * @param value\n   * @param locales\n   */\n  notEmpty = (value, locales = defaultLocales) => isText(value, locales)\n    .then(response => value.length > 0 ?\n        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY]))\n    .catch(response => Promise.reject([response, locales.NOT_LEGIT(value)])),\n\n  /**\n   *\n   * @param value\n   * @param locales\n   * @param min\n   */\n  minLowerCaseChars = (value, locales = defaultLocales, min = 1) => isText(value, locales)\n    .then(response => {\n      const pattern = new RegExp(/\\p{Lowercase_Letter}/u, 'g'); //eslint-disable-line\n\n      if (value.match(pattern).length >= min) {\n        return Promise.resolve([...response, locales.LEGIT(value, min)]);\n      }\n      return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])\n    })\n    .catch(response => Promise.reject([response, locales.NEED_MORE_LOWER_CASE(value, min)]));\n"
   },
   {
     "__docId__": 17,
@@ -1251,7 +1251,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import { Legitimate, flattenResponse, locales, validators as defaultValidators } from './Legitimate';\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;\n\n/** @test {Legitimate} */\ndescribe('Legitimate', () => {\n\n  let legitimate;\n\n  const\n    TEST_OK = value => `alright value : ${value}`,\n    TEST_NOT_OKAY = value => `nope value : ${value}`,\n    validators = {\n      ...defaultValidators,\n      mock : jest.fn(),\n      async : (value, locales) => new Promise((resolve) => {\n        const timer = setTimeout(() => {\n          resolve([locales.TEST_OK(value)])\n        }, 200);\n      }),\n      test : (value, locales) => new Promise((resolve) => {\n        return resolve([locales.TEST_OK(value)]);\n      }),\n      testFail : (value, locales) => {\n        return validators.reject([locales.TEST_NOT_OKAY(value)]);\n      }\n    },\n    newLocales = {\n      ...locales,\n      TEST_OK,\n      TEST_NOT_OKAY\n    };\n\n  /** @test {Legitimate#constructor} */\n  it('can initialize', () => {\n    legitimate = new Legitimate(newLocales, {\n      invalidProp : undefined,\n      validProp : 'valid prop'\n    });\n    expect(legitimate).toBeInstanceOf(Legitimate);\n  });\n\n  /** @test {Legitimate#constructor} */\n  it('legitimate instanceof Legitimate', () => {\n    expect(legitimate instanceof Legitimate).toBe(true);\n  });\n\n  /** @test {Legitimate#rules} */\n  it('get rules', () => {\n    expect(typeof legitimate.rules).toBe('object');\n  });\n\n  /** @test {Legitimate#state} */\n  it('get state', () => {\n    expect(typeof legitimate.state).toBe('object');\n  });\n\n  /** @test {Legitimate#locales} */\n  it('get locales', () => {\n    expect(typeof legitimate.locales).toBe('object');\n  });\n\n  /** @test {flattenResponse} */\n  describe('flattenResponse', () => {\n\n    it('resolve array', cb => {\n      flattenResponse([1, 2, 3, 1, 2, 3])\n        .then(response => {\n          expect(response).toEqual([1,2,3]);\n          cb();\n        })\n        .catch(cb.fail)\n    });\n\n    it('resolve object', cb => {\n\n      const error = new Error('test');\n\n      flattenResponse(error)\n        .then(response => {\n          expect(response).toEqual(error);\n          cb();\n        })\n        .catch(cb.fail)\n    });\n\n    it('reject', cb => {\n      flattenResponse('string')\n        .then(cb.fail)\n        .catch(cb)\n    });\n\n\n  });\n\n  /** @test {Legitimate#setRules} */\n  it('setRules', () => {\n    legitimate.setRules('newProp', validators.test);\n    expect(legitimate.rules['newProp']).toContain(validators.test);\n  });\n\n  /** @test {Legitimate#update} */\n  it('update', () => {\n    const value = 'updated value';\n    legitimate.update('newProp', value);\n    expect(legitimate.state['newProp']).toBe(value);\n  });\n\n  /** @test {Legitimate#validate} */\n  describe('validate', () => {\n\n    it('mock', cb => {\n\n      const\n        mockProp = 'mockProp',\n        mockVal = 'mockVal';\n\n      legitimate\n        .update(mockProp, mockVal)\n        .setRules(mockProp, validators.mock)\n        .validate(mockProp)\n        .then(() => {\n          expect(validators.mock).toHaveBeenLastCalledWith(mockVal, newLocales);\n          cb();\n        })\n        .catch(cb.fail);\n    });\n\n    it('real', cb => {\n\n      let val = 'newPropVal';\n\n      legitimate\n        .update('newProp', val)\n        .setRules('newProp', validators.test)\n        .validate('newProp')\n        .then(messages => {\n          expect(messages instanceof Array).toBe(true);\n          expect(messages).toContain(newLocales.TEST_OK(val));\n          cb();\n        })\n        .catch(cb.fail);\n    });\n\n    it('complex', cb => {\n\n      const\n        value = 'text',\n        rules = [\n          validators.isText,\n          validators.notEmpty,\n          (...params) => validators.minLowerCaseChars(...params, 3)\n        ];\n\n      legitimate\n        .update('newProp', value)\n        .setRules('newProp', ...rules)\n        .validate('newProp')\n        .then(response => {\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(newLocales.LEGIT(value));\n          cb();\n        })\n        .catch(response => {\n          console.error(response);\n          cb.fail(response);\n        });\n\n    });\n\n  });\n\n  describe('isLegit', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'aaaBBBB';\n\n      const rules = [\n        validators.isText,\n        validators.notEmpty,\n        (...params) => validators.minLowerCaseChars(...params, 3)\n      ];\n\n      legitimate\n        .update('newProp', value)\n        .setRules('newProp', ...rules)\n        .validate('newProp')\n        .then(response => {\n\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(newLocales.LEGIT(value));\n\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'aaBBBBBBBB';\n\n      legitimate\n        .update('newProp', value)\n        .validate('newProp')\n        .then(cb.fail)\n        .catch(response => {\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(newLocales.NOT_LEGIT(value));\n          cb();\n        });\n\n    });\n\n  });\n\n});\n"
+    "content": "import { Legitimate, flattenResponse, locales, validators as defaultValidators } from './Legitimate';\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;\n\n/** @test {Legitimate} */\ndescribe('Legitimate', () => {\n\n  let legitimate;\n\n  const\n    TEST_OK = value => `alright value : ${value}`,\n    TEST_NOT_OKAY = value => `nope value : ${value}`,\n    validators = {\n      ...defaultValidators,\n      mock : jest.fn(),\n      async : (value, locales) => new Promise((resolve) => {\n        const timer = setTimeout(() => {\n          resolve([locales.TEST_OK(value)])\n        }, 200);\n      }),\n      test : (value, locales) => new Promise((resolve) => {\n        return resolve([locales.TEST_OK(value)]);\n      }),\n      testFail : (value, locales) => {\n        return validators.reject([locales.TEST_NOT_OKAY(value)]);\n      }\n    },\n    testLocales = {\n      ...locales,\n      TEST_OK,\n      TEST_NOT_OKAY\n    };\n\n  /** @test {Legitimate#constructor} */\n  it('can initialize', () => {\n    legitimate = new Legitimate(testLocales, {\n      invalidProp : undefined,\n      validProp : 'valid prop'\n    });\n    expect(legitimate).toBeInstanceOf(Legitimate);\n  });\n\n  /** @test {Legitimate#constructor} */\n  it('legitimate instanceof Legitimate', () => {\n    expect(legitimate instanceof Legitimate).toBe(true);\n  });\n\n  /** @test {Legitimate#rules} */\n  it('get rules', () => {\n    expect(typeof legitimate.rules).toBe('object');\n  });\n\n  /** @test {Legitimate#state} */\n  it('get state', () => {\n    expect(typeof legitimate.state).toBe('object');\n  });\n\n  /** @test {Legitimate#locales} */\n  it('get locales', () => {\n    expect(typeof legitimate.locales).toBe('object');\n  });\n\n  /** @test {flattenResponse} */\n  describe('flattenResponse', () => {\n\n    it('resolve array', cb => {\n      flattenResponse([1, 2, 3, 1, 2, 3])\n        .then(response => {\n          expect(response).toEqual([1,2,3]);\n          cb();\n        })\n        .catch(cb.fail)\n    });\n\n    it('resolve object', cb => {\n\n      const error = new Error('test');\n\n      flattenResponse(error)\n        .then(response => {\n          expect(response).toEqual(error);\n          cb();\n        })\n        .catch(cb.fail)\n    });\n\n    it('reject', cb => {\n      flattenResponse('string')\n        .then(cb.fail)\n        .catch(cb)\n    });\n\n  });\n\n  it('fails without string props', cb => {\n    expect(() => legitimate.setRules(null)).toThrow();\n    expect(() => legitimate.update(null)).toThrow();\n    legitimate\n      .validate(null)\n      .then(cb.fail)\n      .catch(cb);\n  });\n\n  /** @test {Legitimate#setRules} */\n  it('setRules', () => {\n    legitimate.setRules('newProp', validators.test);\n    expect(legitimate.rules['newProp']).toContain(validators.test);\n  });\n\n  /** @test {Legitimate#update} */\n  it('update', () => {\n    const value = 'updated value';\n    legitimate.update('newProp', value);\n    expect(legitimate.state['newProp']).toBe(value);\n  });\n\n  /** @test {Legitimate#validate} */\n  describe('validate', () => {\n\n    it('mock', cb => {\n\n      const\n        mockProp = 'mockProp',\n        mockVal = 'mockVal';\n\n      legitimate\n        .update(mockProp, mockVal)\n        .setRules(mockProp, validators.mock)\n        .validate(mockProp)\n        .then(() => {\n          expect(validators.mock).toHaveBeenLastCalledWith(mockVal, testLocales);\n          cb();\n        })\n        .catch(cb.fail);\n    });\n\n    it('real', cb => {\n\n      let val = 'newPropVal';\n\n      legitimate\n        .update('newProp', val)\n        .setRules('newProp', validators.test)\n        .validate('newProp')\n        .then(messages => {\n          expect(messages instanceof Array).toBe(true);\n          expect(messages).toContain(testLocales.TEST_OK(val));\n          cb();\n        })\n        .catch(cb.fail);\n    });\n\n    describe('complex', () => {\n\n      it('resolve', cb => {\n\n        const\n          value = 'aaaBBBB',\n          rules = [\n            validators.isText,\n            validators.notEmpty,\n            (...params) => validators.minLowerCaseChars(...params, 3)\n          ];\n\n        legitimate\n          .update('newProp', value)\n          .setRules('newProp', ...rules)\n          .validate('newProp')\n          .then(response => {\n            expect(response instanceof Array).toBe(true);\n            expect(response).toContain(testLocales.LEGIT(value));\n            cb();\n          })\n          .catch(cb.fail);\n\n\n\n      });\n\n      it('reject', cb => {\n\n        let value = 'aaBBBBBBBB';\n\n        legitimate\n          .update('newProp', value)\n          .validate('newProp')\n          .then(cb.fail)\n          .catch(response => {\n            expect(response instanceof Array).toBe(true);\n            expect(response).toContain(testLocales.NEED_MORE_LOWER_CASE(value, 3));\n            cb();\n          });\n\n      });\n\n    });\n\n  });\n\n  describe('isLegit', () => {\n\n    it('could reject', cb => {\n\n      const value = legitimate.state.newProp;\n\n      legitimate\n        .isLegit()\n        .then(error => {\n          cb.fail(error);\n        })\n        .catch(response => {\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(testLocales.NEED_MORE_LOWER_CASE(value, 3));\n\n          cb();\n        });\n\n    });\n\n    it('could resolve', cb => {\n\n      const\n        value = 'aaaBBBB';\n\n      legitimate\n        .update('newProp', value)\n        .isLegit()\n        .then(response => {\n          expect(response instanceof Array).toBe(true);\n          expect(response).toContain(testLocales.LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n  });\n\n});\n"
   },
   {
     "__docId__": 76,
@@ -1467,17 +1467,8 @@
     "testDepth": 1,
     "longname": "lib/Legitimate.test.js~describe0.it10",
     "access": null,
-    "description": "setRules",
-    "lineNumber": 97,
-    "unknown": [
-      {
-        "tagName": "@test",
-        "tagValue": "{Legitimate#setRules}"
-      }
-    ],
-    "testTargets": [
-      "Legitimate#setRules"
-    ]
+    "description": "fails without string props",
+    "lineNumber": 95
   },
   {
     "__docId__": 87,
@@ -1490,8 +1481,31 @@
     "testDepth": 1,
     "longname": "lib/Legitimate.test.js~describe0.it11",
     "access": null,
+    "description": "setRules",
+    "lineNumber": 105,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{Legitimate#setRules}"
+      }
+    ],
+    "testTargets": [
+      "Legitimate#setRules"
+    ]
+  },
+  {
+    "__docId__": 88,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it12",
+    "testId": 12,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.it12",
+    "access": null,
     "description": "update",
-    "lineNumber": 103,
+    "lineNumber": 111,
     "unknown": [
       {
         "tagName": "@test",
@@ -1503,18 +1517,18 @@
     ]
   },
   {
-    "__docId__": 88,
+    "__docId__": 89,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
-    "name": "describe12",
-    "testId": 12,
+    "name": "describe13",
+    "testId": 13,
     "memberof": "lib/Legitimate.test.js~describe0",
     "testDepth": 1,
-    "longname": "lib/Legitimate.test.js~describe0.describe12",
+    "longname": "lib/Legitimate.test.js~describe0.describe13",
     "access": null,
     "description": "validate",
-    "lineNumber": 110,
+    "lineNumber": 118,
     "unknown": [
       {
         "tagName": "@test",
@@ -1526,32 +1540,18 @@
     ]
   },
   {
-    "__docId__": 89,
-    "kind": "testIt",
-    "static": true,
-    "variation": null,
-    "name": "it13",
-    "testId": 13,
-    "memberof": "lib/Legitimate.test.js~describe0.describe12",
-    "testDepth": 2,
-    "longname": "lib/Legitimate.test.js~describe0.describe12.it13",
-    "access": null,
-    "description": "mock",
-    "lineNumber": 112
-  },
-  {
     "__docId__": 90,
     "kind": "testIt",
     "static": true,
     "variation": null,
     "name": "it14",
     "testId": 14,
-    "memberof": "lib/Legitimate.test.js~describe0.describe12",
+    "memberof": "lib/Legitimate.test.js~describe0.describe13",
     "testDepth": 2,
-    "longname": "lib/Legitimate.test.js~describe0.describe12.it14",
+    "longname": "lib/Legitimate.test.js~describe0.describe13.it14",
     "access": null,
-    "description": "real",
-    "lineNumber": 129
+    "description": "mock",
+    "lineNumber": 120
   },
   {
     "__docId__": 91,
@@ -1560,12 +1560,12 @@
     "variation": null,
     "name": "it15",
     "testId": 15,
-    "memberof": "lib/Legitimate.test.js~describe0.describe12",
+    "memberof": "lib/Legitimate.test.js~describe0.describe13",
     "testDepth": 2,
-    "longname": "lib/Legitimate.test.js~describe0.describe12.it15",
+    "longname": "lib/Legitimate.test.js~describe0.describe13.it15",
     "access": null,
-    "description": "complex",
-    "lineNumber": 145
+    "description": "real",
+    "lineNumber": 137
   },
   {
     "__docId__": 92,
@@ -1574,12 +1574,12 @@
     "variation": null,
     "name": "describe16",
     "testId": 16,
-    "memberof": "lib/Legitimate.test.js~describe0",
-    "testDepth": 1,
-    "longname": "lib/Legitimate.test.js~describe0.describe16",
+    "memberof": "lib/Legitimate.test.js~describe0.describe13",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe13.describe16",
     "access": null,
-    "description": "isLegit",
-    "lineNumber": 173
+    "description": "complex",
+    "lineNumber": 153
   },
   {
     "__docId__": 93,
@@ -1588,12 +1588,12 @@
     "variation": null,
     "name": "it17",
     "testId": 17,
-    "memberof": "lib/Legitimate.test.js~describe0.describe16",
-    "testDepth": 2,
-    "longname": "lib/Legitimate.test.js~describe0.describe16.it17",
+    "memberof": "lib/Legitimate.test.js~describe0.describe13.describe16",
+    "testDepth": 3,
+    "longname": "lib/Legitimate.test.js~describe0.describe13.describe16.it17",
     "access": null,
-    "description": "could resolve",
-    "lineNumber": 175
+    "description": "resolve",
+    "lineNumber": 155
   },
   {
     "__docId__": 94,
@@ -1602,15 +1602,57 @@
     "variation": null,
     "name": "it18",
     "testId": 18,
-    "memberof": "lib/Legitimate.test.js~describe0.describe16",
-    "testDepth": 2,
-    "longname": "lib/Legitimate.test.js~describe0.describe16.it18",
+    "memberof": "lib/Legitimate.test.js~describe0.describe13.describe16",
+    "testDepth": 3,
+    "longname": "lib/Legitimate.test.js~describe0.describe13.describe16.it18",
     "access": null,
-    "description": "could reject",
-    "lineNumber": 200
+    "description": "reject",
+    "lineNumber": 180
   },
   {
     "__docId__": 95,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe19",
+    "testId": 19,
+    "memberof": "lib/Legitimate.test.js~describe0",
+    "testDepth": 1,
+    "longname": "lib/Legitimate.test.js~describe0.describe19",
+    "access": null,
+    "description": "isLegit",
+    "lineNumber": 200
+  },
+  {
+    "__docId__": 96,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it20",
+    "testId": 20,
+    "memberof": "lib/Legitimate.test.js~describe0.describe19",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe19.it20",
+    "access": null,
+    "description": "could reject",
+    "lineNumber": 202
+  },
+  {
+    "__docId__": 97,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it21",
+    "testId": 21,
+    "memberof": "lib/Legitimate.test.js~describe0.describe19",
+    "testDepth": 2,
+    "longname": "lib/Legitimate.test.js~describe0.describe19.it21",
+    "access": null,
+    "description": "could resolve",
+    "lineNumber": 220
+  },
+  {
+    "__docId__": 98,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1623,49 +1665,49 @@
     "content": "import { locales } from './Legitimate'\n\ndescribe('locales', () => {\n\n  it('should be object', () => {\n    expect(typeof locales).toBe('object');\n  });\n\n  it('should have proper properties', () => {\n    expect(Object.keys(locales).map(localeProp => {\n      expect(typeof locales[localeProp]).toBe('function');\n\n      let locale = locales[localeProp]('a', 'b', 'c', 'd', 'e', 'f');\n      expect(typeof locale).toBe('string');\n\n    }) instanceof Array).toBe(true);\n  });\n\n});\n"
   },
   {
-    "__docId__": 96,
+    "__docId__": 99,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
-    "name": "describe19",
-    "testId": 19,
+    "name": "describe22",
+    "testId": 22,
     "memberof": "lib/locales.test.js",
     "testDepth": 0,
-    "longname": "lib/locales.test.js~describe19",
+    "longname": "lib/locales.test.js~describe22",
     "access": null,
     "description": "locales",
     "lineNumber": 3
   },
   {
-    "__docId__": 97,
+    "__docId__": 100,
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it20",
-    "testId": 20,
-    "memberof": "lib/locales.test.js~describe19",
+    "name": "it23",
+    "testId": 23,
+    "memberof": "lib/locales.test.js~describe22",
     "testDepth": 1,
-    "longname": "lib/locales.test.js~describe19.it20",
+    "longname": "lib/locales.test.js~describe22.it23",
     "access": null,
     "description": "should be object",
     "lineNumber": 5
   },
   {
-    "__docId__": 98,
+    "__docId__": 101,
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it21",
-    "testId": 21,
-    "memberof": "lib/locales.test.js~describe19",
+    "name": "it24",
+    "testId": 24,
+    "memberof": "lib/locales.test.js~describe22",
     "testDepth": 1,
-    "longname": "lib/locales.test.js~describe19.it21",
+    "longname": "lib/locales.test.js~describe22.it24",
     "access": null,
     "description": "should have proper properties",
     "lineNumber": 9
   },
   {
-    "__docId__": 99,
+    "__docId__": 102,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1675,35 +1717,35 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import { locales, validators, flattenResponse } from './Legitimate';\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;\n\ndescribe('validators', () => {\n\n  /** @test {validators} */\n  it('must be object', () => {\n    expect(typeof validators).toBe('object');\n  });\n\n  /** @test {validators#isText} */\n  describe('isText', () => {\n\n    it('could resolve', cb => {\n\n      const testText = 'Just TESTING';\n\n      validators\n        .isText(testText)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(testText));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .isText(null)\n        .then(flattenResponse)\n        .then(response => {\n          cb.fail(response);\n        })\n        .catch((...response) => {\n\n          flattenResponse(...response)\n            .then(response => {\n              expect(response).toContain(locales.NOT_LEGIT(null));\n              cb();\n            })\n            .catch(cb.fail)\n        });\n\n    });\n\n  });\n\n  /** @test {validators#notEmpty} */\n  describe('notEmpty', () => {\n\n    it('could resolve', cb => {\n\n      validators\n        .notEmpty('string')\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT('string'));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .notEmpty('')\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NOT_LEGIT(''));\n          cb();\n        });\n\n    });\n\n  })\n\n});\n"
+    "content": "import * as locales from './locales';\nimport * as validators from './validators';\nimport { flattenResponse } from './Legitimate';\n\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;\n\ndescribe('validators', () => {\n\n  /** @test {validators} */\n  it('must be object', () => {\n    expect(typeof validators).toBe('object');\n  });\n\n  /** @test {validators#isText} */\n  describe('isText', () => {\n\n    it('could resolve', cb => {\n\n      const testText = 'Just TESTING';\n\n      validators\n        .isText(testText)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(testText));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .isText(null)\n        .then(flattenResponse)\n        .then(response => {\n          cb.fail(response);\n        })\n        .catch((...response) => {\n\n          flattenResponse(...response)\n            .then(response => {\n              expect(response).toContain(locales.NOT_LEGIT(null));\n              cb();\n            })\n            .catch(cb.fail)\n        });\n\n    });\n\n  });\n\n  /** @test {validators#notEmpty} */\n  describe('notEmpty', () => {\n\n    it('could resolve', cb => {\n\n      validators\n        .notEmpty('string')\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT('string'));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .notEmpty('')\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NOT_LEGIT(''));\n          cb();\n        });\n\n    });\n\n  })\n\n});\n"
   },
   {
-    "__docId__": 100,
+    "__docId__": 103,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
-    "name": "describe22",
-    "testId": 22,
+    "name": "describe25",
+    "testId": 25,
     "memberof": "lib/validators.test.js",
     "testDepth": 0,
-    "longname": "lib/validators.test.js~describe22",
+    "longname": "lib/validators.test.js~describe25",
     "access": null,
     "description": "validators",
-    "lineNumber": 5
+    "lineNumber": 8
   },
   {
-    "__docId__": 101,
+    "__docId__": 104,
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it23",
-    "testId": 23,
-    "memberof": "lib/validators.test.js~describe22",
+    "name": "it26",
+    "testId": 26,
+    "memberof": "lib/validators.test.js~describe25",
     "testDepth": 1,
-    "longname": "lib/validators.test.js~describe22.it23",
+    "longname": "lib/validators.test.js~describe25.it26",
     "access": null,
     "description": "must be object",
-    "lineNumber": 8,
+    "lineNumber": 11,
     "unknown": [
       {
         "tagName": "@test",
@@ -1715,18 +1757,18 @@
     ]
   },
   {
-    "__docId__": 102,
+    "__docId__": 105,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
-    "name": "describe24",
-    "testId": 24,
-    "memberof": "lib/validators.test.js~describe22",
+    "name": "describe27",
+    "testId": 27,
+    "memberof": "lib/validators.test.js~describe25",
     "testDepth": 1,
-    "longname": "lib/validators.test.js~describe22.describe24",
+    "longname": "lib/validators.test.js~describe25.describe27",
     "access": null,
     "description": "isText",
-    "lineNumber": 13,
+    "lineNumber": 16,
     "unknown": [
       {
         "tagName": "@test",
@@ -1738,46 +1780,46 @@
     ]
   },
   {
-    "__docId__": 103,
+    "__docId__": 106,
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it25",
-    "testId": 25,
-    "memberof": "lib/validators.test.js~describe22.describe24",
+    "name": "it28",
+    "testId": 28,
+    "memberof": "lib/validators.test.js~describe25.describe27",
     "testDepth": 2,
-    "longname": "lib/validators.test.js~describe22.describe24.it25",
+    "longname": "lib/validators.test.js~describe25.describe27.it28",
     "access": null,
     "description": "could resolve",
-    "lineNumber": 15
+    "lineNumber": 18
   },
   {
-    "__docId__": 104,
+    "__docId__": 107,
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it26",
-    "testId": 26,
-    "memberof": "lib/validators.test.js~describe22.describe24",
+    "name": "it29",
+    "testId": 29,
+    "memberof": "lib/validators.test.js~describe25.describe27",
     "testDepth": 2,
-    "longname": "lib/validators.test.js~describe22.describe24.it26",
+    "longname": "lib/validators.test.js~describe25.describe27.it29",
     "access": null,
     "description": "could reject",
-    "lineNumber": 30
+    "lineNumber": 33
   },
   {
-    "__docId__": 105,
+    "__docId__": 108,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
-    "name": "describe27",
-    "testId": 27,
-    "memberof": "lib/validators.test.js~describe22",
+    "name": "describe30",
+    "testId": 30,
+    "memberof": "lib/validators.test.js~describe25",
     "testDepth": 1,
-    "longname": "lib/validators.test.js~describe22.describe27",
+    "longname": "lib/validators.test.js~describe25.describe30",
     "access": null,
     "description": "notEmpty",
-    "lineNumber": 53,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@test",
@@ -1789,31 +1831,31 @@
     ]
   },
   {
-    "__docId__": 106,
+    "__docId__": 109,
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it28",
-    "testId": 28,
-    "memberof": "lib/validators.test.js~describe22.describe27",
+    "name": "it31",
+    "testId": 31,
+    "memberof": "lib/validators.test.js~describe25.describe30",
     "testDepth": 2,
-    "longname": "lib/validators.test.js~describe22.describe27.it28",
+    "longname": "lib/validators.test.js~describe25.describe30.it31",
     "access": null,
     "description": "could resolve",
-    "lineNumber": 55
+    "lineNumber": 58
   },
   {
-    "__docId__": 107,
+    "__docId__": 110,
     "kind": "testIt",
     "static": true,
     "variation": null,
-    "name": "it29",
-    "testId": 29,
-    "memberof": "lib/validators.test.js~describe22.describe27",
+    "name": "it32",
+    "testId": 32,
+    "memberof": "lib/validators.test.js~describe25.describe30",
     "testDepth": 2,
-    "longname": "lib/validators.test.js~describe22.describe27.it29",
+    "longname": "lib/validators.test.js~describe25.describe30.it32",
     "access": null,
     "description": "could reject",
-    "lineNumber": 68
+    "lineNumber": 71
   }
 ]

@@ -46,25 +46,40 @@
 
 export const
 
+  /**
+   *
+   * @param value
+   * @param locales
+   */
   isText = (value, locales = defaultLocales) =&gt; new Promise((resolve, reject) =&gt; typeof value === &apos;string&apos; ?
     resolve([locales.LEGIT(value)]) : reject([locales.NOT_LEGIT(value)])),
 
+  /**
+   *
+   * @param value
+   * @param locales
+   */
   notEmpty = (value, locales = defaultLocales) =&gt; isText(value, locales)
     .then(response =&gt; value.length &gt; 0 ?
         Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY]))
     .catch(response =&gt; Promise.reject([response, locales.NOT_LEGIT(value)])),
 
-  minLowerCaseChars = (value, locales = defaultLocales, count = 1) =&gt; isText(value, locales)
+  /**
+   *
+   * @param value
+   * @param locales
+   * @param min
+   */
+  minLowerCaseChars = (value, locales = defaultLocales, min = 1) =&gt; isText(value, locales)
     .then(response =&gt; {
+      const pattern = new RegExp(/\p{Lowercase_Letter}/u, &apos;g&apos;); //eslint-disable-line
 
-      const pattern = new RegExp(/\p{Lowercase_Letter}/u, &apos;g&apos;);
-
-      if (value.match(pattern).length &gt;= count) {
-        return Promise.resolve([...response, locales.LEGIT(value, count)]);
+      if (value.match(pattern).length &gt;= min) {
+        return Promise.resolve([...response, locales.LEGIT(value, min)]);
       }
-      return Promise.reject([locales.TOO_SHORT(value, count)])
+      return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])
     })
-    .catch(response =&gt; Promise.reject([response, locales.NOT_LEGIT(value, count)]));
+    .catch(response =&gt; Promise.reject([response, locales.NEED_MORE_LOWER_CASE(value, min)]));
 </code></pre>
 
 </div>
