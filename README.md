@@ -1,7 +1,8 @@
 # legitimate
 
 [![npm][npm-image]][npm-url]
-[![build][travis-image]][repo-url]
+[![docs][docs-image]][docs-url]
+[![build][travis-image]][travis-url]
 [![codecov][codecov-image]][codecov-url]
 [![dependencies][david-image]][david-url]
 [![version][tag-image]][tag-url]
@@ -45,7 +46,7 @@ import { Legitimate, validators, locales } from 'legitimate';
 const
   legitimate = new Legitimate({
     ...locales
-    TOO_SHORT : 'Custom minimum chars';
+    TOO_SHORT : (value, min) => `Custom message : ${min}`;
   }, {
 
   }),
@@ -123,11 +124,13 @@ or
 yarn version major -f -m "Made incompatible API changes";
 ```
 
+[docs-image]: https://doc.esdoc.org/github.com/JacopKane/legitimate/badge.svg
+[docs-url]:https://doc.esdoc.org/github.com/JacopKane/legitimate/
 [npm-image]: https://img.shields.io/npm/v/legitimate.svg
 [npm-url]:https://www.npmjs.org/package/legitimate
 [codecov-image]: https://codecov.io/gh/jacopkane/legitimate/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/jacopkane/legitimate
-[repo-url]: https://github.com/jacopkane/legitimate
+[travis-url]: https://travis-ci.org/JacopKane/legitimate
 [travis-image]: https://travis-ci.org/JacopKane/legitimate.svg?branch=master
 [david-url]: https://david-dm.org/jacopkane/legitimate?type=dev
 [david-image]: https://david-dm.org/jacopkane/legitimate/dev-status.svg

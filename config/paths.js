@@ -31,7 +31,7 @@ module.exports = {
   appHtml: resolveApp('public/index.html'),
   appBootstrapJs: resolveApp('src/bootstrap-demo.js'),
   appIndexJs: resolveApp('src/index.js'),
-  appLibraryJs: resolveApp('src/lib/legitimate.js'),
+  appLibraryJs: resolveApp('src/lib/Legitimate.js'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   testsSetup: resolveApp('src/setupTests.js'),
