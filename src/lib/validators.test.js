@@ -145,7 +145,6 @@ describe('validators', () => {
         .then(flattenResponse)
         .then(cb.fail)
         .catch(response => {
-          console.log('response', response);
           expect(response).toContain(locales.TOO_LONG(value, 7));
           cb();
         });
