@@ -61,8 +61,8 @@ export const
    */
   notEmpty = (value, locales = defaultLocales) =&gt; isText(value, locales)
     .then(response =&gt; value.length &gt; 0 ?
-        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY]))
-    .catch(response =&gt; Promise.reject([response, locales.NOT_LEGIT(value)])),
+        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY(value)]))
+    .catch(response =&gt; Promise.reject([...response, locales.EMPTY(value)])),
 
   /**
    *
@@ -79,7 +79,7 @@ export const
       }
       return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])
     })
-    .catch(response =&gt; Promise.reject([response, locales.NEED_MORE_LOWER_CASE(value, min)])),
+    .catch(response =&gt; Promise.reject([...response, locales.NEED_MORE_LOWER_CASE(value, min)])),
 
   /**
    *
@@ -94,9 +94,9 @@ export const
       if (value.match(pattern).length &gt;= min) {
         return Promise.resolve([...response, locales.LEGIT(value, min)]);
       }
-      return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])
+      return Promise.reject([locales.NEED_MORE_UPPER_CASE(value, min)])
     })
-    .catch(response =&gt; Promise.reject([response, locales.NEED_MORE_LOWER_CASE(value, min)])),
+    .catch(response =&gt; Promise.reject([...response, locales.NEED_MORE_UPPER_CASE(value, min)])),
 
   /**
    * uses URL from DOM
@@ -148,11 +148,11 @@ export const
       const pattern = new RegExp(/^[\p{L}]([-&apos;]?[\p{L}]+)*( [\p{L}]([-&apos;]?[\p{L}]+)*)+$/u); //eslint-disable-line
 
       if (pattern.test(value) === true) {
-        return Promise.resolve([response, locales.LEGIT(value)]);
+        return Promise.resolve([...response, locales.LEGIT(value)]);
       }
       return Promise.reject([locales.FULL_NAME_IS_NOT_VALID(value)])
     })
-    .catch(response =&gt; Promise.reject([response, locales.FULL_NAME_IS_NOT_VALID(value)]));
+    .catch(response =&gt; Promise.reject([...response, locales.FULL_NAME_IS_NOT_VALID(value)]));
 </code></pre>
 
 </div>

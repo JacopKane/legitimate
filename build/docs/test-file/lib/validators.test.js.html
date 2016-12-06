@@ -119,13 +119,13 @@ describe(&apos;validators&apos;, () =&gt; {
         .then(flattenResponse)
         .then(cb.fail)
         .catch(response =&gt; {
-          expect(response).toContain(locales.NOT_LEGIT(&apos;&apos;));
+          expect(response).toContain(locales.EMPTY(&apos;&apos;));
           cb();
         });
 
     });
 
-  })
+  });
 
   /** @test {minLowerCaseChars} */
   describe(&apos;minLowerCaseChars&apos;, () =&gt; {
@@ -189,7 +189,7 @@ describe(&apos;validators&apos;, () =&gt; {
         .then(flattenResponse)
         .then(cb.fail)
         .catch(response =&gt; {
-          expect(response).toContain(locales.NEED_MORE_LOWER_CASE(value, 6));
+          expect(response).toContain(locales.NEED_MORE_UPPER_CASE(value, 6));
           cb();
         });
 

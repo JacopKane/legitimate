@@ -1,7 +1,7 @@
 {
   "name": "legitimate",
   "description": "Modular async validation 👌",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "jsnext:main": "src/lib/Legitimate.js",
   "main": "build/static/js/legitimate.js",
   "repository": {
@@ -18,8 +18,10 @@
     "babel-plugin-transform-function-bind": "^6.8.0",
     "babel-plugin-transform-unicode-property-regex": "^1.0.0",
     "babel-preset-react-app": "^1.0.0",
+    "bootstrap": "4.0.0-alpha.5",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "1.1.3",
+    "classname": "^0.0.0",
     "connect-history-api-fallback": "1.3.0",
     "cross-spawn": "4.0.2",
     "css-loader": "0.25.0",
@@ -45,9 +47,12 @@
     "http-proxy-middleware": "0.17.2",
     "jest": "16.0.2",
     "json-loader": "0.5.4",
+    "lodash.debounce": "^4.0.8",
     "path-exists": "2.1.0",
     "postcss-loader": "1.0.0",
     "react": "^15.4.1",
+    "react-addons-css-transition-group": "^15.4.1",
+    "react-addons-transition-group": "^15.4.1",
     "react-dev-utils": "^0.3.0",
     "react-dom": "^15.4.1",
     "recursive-readdir": "2.1.0",
@@ -64,6 +69,7 @@
     "isomorphic-fetch": "^2.2.1",
     "object-assign": "4.1.0",
     "promise": "7.1.1",
+    "reactstrap": "^3.9.3",
     "url-parse": "^1.1.7"
   },
   "scripts": {
