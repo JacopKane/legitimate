@@ -48,7 +48,13 @@ export class Demo extends Component {
 
             <Col xs={{ size : 6, offset : 3 }}>
 
-              <DemoForm fields={[ 'firstAndLastName', 'username', 'password', 'email' ]} />
+              <DemoForm fields={[
+                'firstAndLastName',
+                'username',
+                'password',
+                'email',
+                'url'
+              ]} />
 
             </Col>
 

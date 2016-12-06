@@ -1,7 +1,7 @@
 {
   "name": "legitimate",
   "description": "Modular async validation 👌",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "jsnext:main": "src/lib/Legitimate.js",
   "main": "build/static/js/legitimate.js",
   "repository": {

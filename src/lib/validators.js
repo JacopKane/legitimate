@@ -70,7 +70,7 @@ export const
       reject([locales.URL_IS_NOT_VALID(value)]);
 
     } catch (error) {
-      reject([error, locales.URL_IS_NOT_VALID(value)]);
+      reject([locales.URL_IS_NOT_VALID(value)]);
     }
   }),
 

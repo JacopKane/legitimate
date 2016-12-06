@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Form, Button } from 'reactstrap';
 import debounce from 'lodash.debounce';
+import { DemoFormUrl } from './DemoFormUrl';
 import { DemoFormEmail } from './DemoFormEmail';
 import { DemoFormUsername } from './DemoFormUsername';
 import { DemoFormPassword } from './DemoFormPassword';
@@ -17,14 +18,16 @@ export class DemoForm extends Component {
 
   state = {
     submitted : false,
-    firstAndLastNameError : false,
+    urlError : false,
+    emailError : false,
     usernameError : false,
     passwordError : false,
-    emailError : false,
+    firstAndLastNameError : false,
     firstAndLastNameLegit : false,
     usernameLegit : false,
     passwordLegit : false,
-    emailLegit : false
+    emailLegit : false,
+    urlLegit : false
   };
 
   onChange = (event, field) => {
@@ -65,15 +68,21 @@ export class DemoForm extends Component {
       (...params) => validators.minUpperCaseChars(...params, 1)
     ],
     username : [validators.notEmpty],
-    email : [validators.email, validators.notEmpty]
+    email : [validators.email, validators.notEmpty],
+    url : [validators.url]
   };
 
   setFieldRules = fields => {
-    fields.forEach(field => legitimate.setRules(field, ...this.fieldRules[field]));
+    fields.forEach(field => {
+      if (this.fieldRules[field]) {
+        legitimate.setRules(field, ...this.fieldRules[field]);
+      }
+    });
   };
 
   fieldComponents = {
 
+    url : DemoFormUrl,
     email : DemoFormEmail,
     username : DemoFormUsername,
     password : DemoFormPassword,
