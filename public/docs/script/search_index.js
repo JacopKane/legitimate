@@ -601,37 +601,37 @@ window.esdocSearchIndex = [
   ],
   [
     "email email,email",
-    "test-file/lib/validators.test.js.html#lineNumber192",
+    "test-file/lib/validators.test.js.html#lineNumber263",
     "validators email",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber209",
+    "test-file/lib/validators.test.js.html#lineNumber280",
     "validators email could reject",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber194",
+    "test-file/lib/validators.test.js.html#lineNumber265",
     "validators email could resolve",
     "test"
   ],
   [
     "fullname fullname,fullname",
-    "test-file/lib/validators.test.js.html#lineNumber227",
+    "test-file/lib/validators.test.js.html#lineNumber298",
     "validators fullName",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber244",
+    "test-file/lib/validators.test.js.html#lineNumber315",
     "validators fullName could reject",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber229",
+    "test-file/lib/validators.test.js.html#lineNumber300",
     "validators fullName could resolve",
     "test"
   ],
@@ -654,38 +654,74 @@ window.esdocSearchIndex = [
     "test"
   ],
   [
-    "minlowercasechars minlowercasechars,minlowercasechars",
-    "test-file/lib/validators.test.js.html#lineNumber87",
-    "validators minLowerCaseChars",
-    "test"
-  ],
-  [
-    "",
-    "test-file/lib/validators.test.js.html#lineNumber104",
-    "validators minLowerCaseChars could reject",
-    "test"
-  ],
-  [
-    "",
-    "test-file/lib/validators.test.js.html#lineNumber89",
-    "validators minLowerCaseChars could resolve",
-    "test"
-  ],
-  [
-    "minuppercasechars minuppercasechars,minuppercasechars",
+    "max max,max",
     "test-file/lib/validators.test.js.html#lineNumber122",
-    "validators minUpperCaseChars",
+    "validators max",
     "test"
   ],
   [
     "",
     "test-file/lib/validators.test.js.html#lineNumber139",
-    "validators minUpperCaseChars could reject",
+    "validators max could reject",
     "test"
   ],
   [
     "",
     "test-file/lib/validators.test.js.html#lineNumber124",
+    "validators max could resolve",
+    "test"
+  ],
+  [
+    "min min,min",
+    "test-file/lib/validators.test.js.html#lineNumber87",
+    "validators min",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber104",
+    "validators min could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber89",
+    "validators min could resolve",
+    "test"
+  ],
+  [
+    "minlowercasechars minlowercasechars,minlowercasechars",
+    "test-file/lib/validators.test.js.html#lineNumber158",
+    "validators minLowerCaseChars",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber175",
+    "validators minLowerCaseChars could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber160",
+    "validators minLowerCaseChars could resolve",
+    "test"
+  ],
+  [
+    "minuppercasechars minuppercasechars,minuppercasechars",
+    "test-file/lib/validators.test.js.html#lineNumber193",
+    "validators minUpperCaseChars",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber210",
+    "validators minUpperCaseChars could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber195",
     "validators minUpperCaseChars could resolve",
     "test"
   ],
@@ -715,20 +751,38 @@ window.esdocSearchIndex = [
   ],
   [
     "url url,url",
-    "test-file/lib/validators.test.js.html#lineNumber157",
+    "test-file/lib/validators.test.js.html#lineNumber228",
     "validators url",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber174",
+    "test-file/lib/validators.test.js.html#lineNumber245",
     "validators url could reject",
     "test"
   ],
   [
     "",
-    "test-file/lib/validators.test.js.html#lineNumber159",
+    "test-file/lib/validators.test.js.html#lineNumber230",
     "validators url could resolve",
+    "test"
+  ],
+  [
+    "username username,username",
+    "test-file/lib/validators.test.js.html#lineNumber333",
+    "validators username",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber350",
+    "validators username could reject",
+    "test"
+  ],
+  [
+    "",
+    "test-file/lib/validators.test.js.html#lineNumber335",
+    "validators username could resolve",
     "test"
   ]
 ]

@@ -1,9 +1,10 @@
 {
   "name": "legitimate",
-  "description": "Modular async validation 👌",
-  "version": "0.2.4",
+  "description": "Functional, modular and async validation 👌",
+  "version": "0.2.5",
   "jsnext:main": "src/lib/Legitimate.js",
   "main": "build/static/js/legitimate.js",
+  "keywords": ["functional", "modular", "async", "validation", "👌"],
   "repository": {
     "url": "https://github.com/JacopKane/legitimate.git"
   },

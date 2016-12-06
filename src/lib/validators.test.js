@@ -3,7 +3,7 @@ import * as validators from './validators';
 import { flattenResponse } from './Legitimate';
 
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
 describe('validators', () => {
 
@@ -61,7 +61,7 @@ describe('validators', () => {
         .notEmpty('string')
         .then(flattenResponse)
         .then(response => {
-          expect(response).toContain(locales.LEGIT('string'));
+          expect(response).toContain(locales.EMPTY_LEGIT('string'));
           cb();
         })
         .catch(cb.fail);
@@ -83,6 +83,77 @@ describe('validators', () => {
 
   });
 
+  /** @test {min} */
+  describe('min', () => {
+
+    it('could resolve', cb => {
+
+      let value = 'üöı';
+
+      validators
+        .min(value, locales, 3)
+        .then(flattenResponse)
+        .then(response => {
+          expect(response).toContain(locales.TOO_SHORT_LEGIT(value, 3));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it('could reject', cb => {
+
+      let value = 'üö';
+
+      validators
+        .min(value, locales, 3)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response => {
+          expect(response).toContain(locales.TOO_SHORT(value, 3));
+          cb();
+        });
+
+    });
+
+  })
+
+  /** @test {max} */
+  describe('max', () => {
+
+    it('could resolve', cb => {
+
+      let value = '12345678';
+
+      validators
+        .max(value, locales, 8)
+        .then(flattenResponse)
+        .then(response => {
+          expect(response).toContain(locales.TOO_LONG_LEGIT(value, 8));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it('could reject', cb => {
+
+      let value = '12345678';
+
+      validators
+        .max(value, locales, 7)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response => {
+          console.log('response', response);
+          expect(response).toContain(locales.TOO_LONG(value, 7));
+          cb();
+        });
+
+    });
+
+  });
+
   /** @test {minLowerCaseChars} */
   describe('minLowerCaseChars', () => {
 
@@ -94,7 +165,7 @@ describe('validators', () => {
         .minLowerCaseChars(value, locales, 4)
         .then(flattenResponse)
         .then(response => {
-          expect(response).toContain(locales.LEGIT(value, 4));
+          expect(response).toContain(locales.NEED_MORE_LOWER_CASE_LEGIT(value, 4));
           cb();
         })
         .catch(cb.fail);
@@ -129,7 +200,7 @@ describe('validators', () => {
         .minUpperCaseChars(value, locales, 5)
         .then(flattenResponse)
         .then(response => {
-          expect(response).toContain(locales.LEGIT(value, 5));
+          expect(response).toContain(locales.NEED_MORE_UPPER_CASE_LEGIT(value, 5));
           cb();
         })
         .catch(cb.fail);
@@ -164,7 +235,7 @@ describe('validators', () => {
         .url(value, locales)
         .then(flattenResponse)
         .then(response => {
-          expect(response).toContain(locales.LEGIT(value));
+          expect(response).toContain(locales.URL_IS_NOT_VALID_LEGIT(value));
           cb();
         })
         .catch(cb.fail);
@@ -199,7 +270,7 @@ describe('validators', () => {
         .email(value, locales)
         .then(flattenResponse)
         .then(response => {
-          expect(response).toContain(locales.LEGIT(value));
+          expect(response).toContain(locales.EMAIL_IS_NOT_VALID_LEGIT(value));
           cb();
         })
         .catch(cb.fail);
@@ -234,7 +305,7 @@ describe('validators', () => {
         .fullName(value, locales)
         .then(flattenResponse)
         .then(response => {
-          expect(response).toContain(locales.LEGIT(value));
+          expect(response).toContain(locales.FULL_NAME_IS_NOT_VALID_LEGIT(value));
           cb();
         })
         .catch(cb.fail);
@@ -251,6 +322,41 @@ describe('validators', () => {
         .then(cb.fail)
         .catch(response => {
           expect(response).toContain(locales.FULL_NAME_IS_NOT_VALID(value));
+          cb();
+        });
+
+    });
+
+  });
+
+  /** @test {username} */
+  describe('username', () => {
+
+    it('could resolve', cb => {
+
+      let value = 'jacopkane';
+
+      validators
+        .alphanumeric(value, locales)
+        .then(flattenResponse)
+        .then(response => {
+          expect(response).toContain(locales.NOT_ALPHANUMERIC_LEGIT(value));
+          cb();
+        })
+        .catch(cb.fail);
+
+    });
+
+    it('could reject', cb => {
+
+      let value = 'Furkan Tunalı';
+
+      validators
+        .alphanumeric(value, locales)
+        .then(flattenResponse)
+        .then(cb.fail)
+        .catch(response => {
+          expect(response).toContain(locales.NOT_ALPHANUMERIC(value));
           cb();
         });
 

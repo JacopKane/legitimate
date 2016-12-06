@@ -458,7 +458,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "const\n  okHand = String.fromCodePoint(0x1F44C),\n  crossMark = String.fromCodePoint(0x274C);\n\nexport const\n\n  LEGIT = () => okHand,\n\n  NOT_LEGIT = () => `${crossMark} Not a valid text`,\n\n  EMPTY = () => `${crossMark} Could not be empty`,\n\n  TOO_SHORT = (value, length) => `${crossMark} At least ${length} characters required`,\n\n  NEED_MORE_LOWER_CASE = (value, min) => `${crossMark} At least ${min} small case characters required`,\n\n  NEED_MORE_UPPER_CASE = (value, min) => `${crossMark} At least ${min} upper case characters required`,\n\n  URL_IS_NOT_VALID = (value) => `${crossMark} ${value} is not a valid URL`,\n\n  EMAIL_IS_NOT_VALID = (value) => `${crossMark} ${value} is not a valid email`,\n\n  FULL_NAME_IS_NOT_VALID = (value) => `${crossMark} ${value} is not a valid full name`;\n\n"
+    "content": "const\n  okHand = String.fromCodePoint(0x1F44C),\n  crossMark = String.fromCodePoint(0x274C);\n\nexport const\n\n  LEGIT = () => okHand,\n\n  NOT_LEGIT = () => `${crossMark}`,\n\n  TEXT_LEGIT = LEGIT,\n\n  NOT_ALPHANUMERIC_LEGIT = LEGIT,\n\n  NOT_ALPHANUMERIC = (value = '') => `${crossMark} ${value} must contain only letters and numerals`,\n\n  EMPTY_LEGIT = LEGIT,\n\n  EMPTY = () => `${crossMark} Could not be empty`,\n\n  TOO_SHORT = (value = '', min = '') => `${crossMark} ${value} is shorter than ${min} characters`,\n\n  TOO_SHORT_LEGIT = LEGIT,\n\n  TOO_LONG = (value = '', max = '') => `${crossMark} ${value} is longer than ${max} characters`,\n\n  TOO_LONG_LEGIT = LEGIT,\n\n  NEED_MORE_LOWER_CASE = (value = '', min = '') => `${crossMark} At least ${min} small case characters required`,\n\n  NEED_MORE_LOWER_CASE_LEGIT = LEGIT,\n\n  NEED_MORE_UPPER_CASE = (value = '', min = '') => `${crossMark} At least ${min} upper case characters required`,\n\n  NEED_MORE_UPPER_CASE_LEGIT = LEGIT,\n\n  URL_IS_NOT_VALID = (value = '') => `${crossMark} ${value} is not a valid URL`,\n\n  URL_IS_NOT_VALID_LEGIT = LEGIT,\n\n  EMAIL_IS_NOT_VALID = (value = '') => `${crossMark} ${value} is not a valid email`,\n\n  EMAIL_IS_NOT_VALID_LEGIT = LEGIT,\n\n  FULL_NAME_IS_NOT_VALID = (value = '') => `${crossMark} ${value} is not a valid full name`,\n\n  FULL_NAME_IS_NOT_VALID_LEGIT = LEGIT;\n\n"
   },
   {
     "__docId__": 14,
@@ -513,7 +513,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import * as defaultLocales from './locales';\n\nexport const\n\n  /**\n   *\n   * @param value\n   * @param locales\n   */\n  isText = (value, locales = defaultLocales) => new Promise((resolve, reject) => typeof value === 'string' ?\n    resolve([locales.LEGIT(value)]) : reject([locales.NOT_LEGIT(value)])),\n\n  /**\n   *\n   * @param value\n   * @param locales\n   */\n  notEmpty = (value, locales = defaultLocales) => isText(value, locales)\n    .then(response => value.length > 0 ?\n        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY(value)]))\n    .catch(response => Promise.reject([...response, locales.EMPTY(value)])),\n\n  /**\n   *\n   * @param value\n   * @param locales\n   * @param min\n   */\n  minLowerCaseChars = (value, locales = defaultLocales, min = 1) => isText(value, locales)\n    .then(response => {\n      const pattern = new RegExp(/\\p{Lowercase_Letter}/u, 'g'); //eslint-disable-line\n\n      if (value.match(pattern).length >= min) {\n        return Promise.resolve([...response, locales.LEGIT(value, min)]);\n      }\n      return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])\n    })\n    .catch(response => Promise.reject([...response, locales.NEED_MORE_LOWER_CASE(value, min)])),\n\n  /**\n   *\n   * @param value\n   * @param locales\n   * @param min\n   */\n  minUpperCaseChars = (value, locales = defaultLocales, min = 1) => isText(value, locales)\n    .then(response => {\n      const pattern = new RegExp(/\\p{Uppercase_Letter}/u, 'g'); //eslint-disable-line\n\n      if (value.match(pattern).length >= min) {\n        return Promise.resolve([...response, locales.LEGIT(value, min)]);\n      }\n      return Promise.reject([locales.NEED_MORE_UPPER_CASE(value, min)])\n    })\n    .catch(response => Promise.reject([...response, locales.NEED_MORE_UPPER_CASE(value, min)])),\n\n  /**\n   * uses URL from DOM\n   * @param value\n   * @param locales\n   */\n  url = (value, locales = defaultLocales) => new Promise((resolve, reject) => {\n    try {\n      const url = new URL(value);\n\n      if (typeof url === 'object') {\n        resolve([locales.LEGIT(value)]);\n      }\n\n      reject([locales.URL_IS_NOT_VALID(value)]);\n\n    } catch (error) {\n      reject([locales.URL_IS_NOT_VALID(value)]);\n    }\n  }),\n\n  /**\n   * forgiving email check\n   * @param value\n   * @param locales\n   */\n  email = (value, locales = defaultLocales) => new Promise((resolve, reject) => {\n\n    const atPosition = value.lastIndexOf(\"@\");\n\n    if (atPosition <= 0) {\n      reject([locales.EMAIL_IS_NOT_VALID(value)]);\n    }\n\n    if (value.lastIndexOf(\".\") <= atPosition) {\n      reject([locales.EMAIL_IS_NOT_VALID(value)]);\n    }\n\n    if (value.length - atPosition <= 4) {\n      reject([locales.EMAIL_IS_NOT_VALID(value)]);\n    }\n\n    resolve([locales.LEGIT(value)]);\n\n  }),\n\n  fullName = (value, locales = defaultLocales) => isText(value, locales)\n    .then(response => {\n      const pattern = new RegExp(/^[\\p{L}]([-']?[\\p{L}]+)*( [\\p{L}]([-']?[\\p{L}]+)*)+$/u); //eslint-disable-line\n\n      if (pattern.test(value) === true) {\n        return Promise.resolve([...response, locales.LEGIT(value)]);\n      }\n      return Promise.reject([locales.FULL_NAME_IS_NOT_VALID(value)])\n    })\n    .catch(response => Promise.reject([...response, locales.FULL_NAME_IS_NOT_VALID(value)]));\n"
+    "content": "import * as defaultLocales from './locales';\n\nexport const\n\n  /**\n   * Checks string\n   * @param value\n   * @param locales\n   */\n  isText = (value, locales = defaultLocales) => new Promise((resolve, reject) => typeof value === 'string' ?\n    resolve([locales.LEGIT(value)]) : reject([locales.NOT_LEGIT(value)])),\n\n  /**\n   * Checks for latin alphanumeric\n   * @param value\n   * @param locales\n   */\n  alphanumeric = (value, locales = defaultLocales) => isText(value)\n    .then(response => RegExp(/^[a-zA-Z0-9]*$/).test(value)\n      ? Promise.resolve([...response, locales.NOT_ALPHANUMERIC_LEGIT(value)])\n        : Promise.reject([locales.NOT_ALPHANUMERIC(value)]))\n    .catch(response => Promise.reject([...response])),\n\n  /**\n   * Checks if string has some length\n   * @param value\n   * @param locales\n   */\n  notEmpty = (value, locales = defaultLocales) => isText(value, locales)\n    .then(response => value.length > 0 ?\n        Promise.resolve([...response, locales.EMPTY_LEGIT(value)]) : Promise.reject([locales.EMPTY(value)]))\n    .catch(response => Promise.reject([...response])),\n\n  /**\n   * Checks minimum chars\n   * @param value\n   * @param locales\n   * @param min\n   */\n  min = (value, locales = defaultLocales, min = 1) => isText(value, locales)\n    .then(response => value.length >= min ?\n      Promise.resolve([...response, locales.TOO_SHORT_LEGIT(value)]) : Promise.reject([locales.TOO_SHORT(value, min)]))\n    .catch(response => Promise.reject([...response])),\n\n  /**\n   * Checks maximum chars\n   * @param value\n   * @param locales\n   * @param max\n   */\n  max = (value, locales = defaultLocales, max = 1) => isText(value, locales)\n    .then(response => (value.length <= max)\n      ? Promise.resolve([...response, locales.TOO_LONG_LEGIT(value, max)])\n        : Promise.reject([locales.TOO_LONG(value, max)]))\n    .catch(response => Promise.reject([...response])),\n\n  /**\n   * Checks minimum amount of lower cases with unicode support\n   * @param value\n   * @param locales\n   *\n   * @param min\n   */\n  minLowerCaseChars = (value, locales = defaultLocales, min = 1) => isText(value, locales)\n    .then(response => {\n      const pattern = new RegExp(/\\p{Lowercase_Letter}/u, 'g'); //eslint-disable-line\n\n      if (value.match(pattern).length >= min) {\n        return Promise.resolve([...response, locales.NEED_MORE_LOWER_CASE_LEGIT(value, min)]);\n      }\n      return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])\n    })\n    .catch(response => Promise.reject([...response])),\n\n  /**\n   * Checks minimum amount of upper cases with unicode support\n   * @param value\n   * @param locales\n   * @param min\n   */\n  minUpperCaseChars = (value, locales = defaultLocales, min = 1) => isText(value, locales)\n    .then(response => {\n      const pattern = new RegExp(/\\p{Uppercase_Letter}/u, 'g'); //eslint-disable-line\n\n      if (value.match(pattern).length >= min) {\n        return Promise.resolve([...response, locales.NEED_MORE_UPPER_CASE_LEGIT(value, min)]);\n      }\n      return Promise.reject([locales.NEED_MORE_UPPER_CASE(value, min)])\n    })\n    .catch(response => Promise.reject([...response])),\n\n  /**\n   * Checks URL with URL parser spec\n   * @param value\n   * @param locales\n   */\n  url = (value, locales = defaultLocales) => new Promise((resolve, reject) => {\n    try {\n      const url = new URL(value);\n\n      if (typeof url === 'object') {\n        resolve([locales.URL_IS_NOT_VALID_LEGIT(value)]);\n      }\n\n      reject([locales.URL_IS_NOT_VALID(value)]);\n\n    } catch (error) {\n      reject([locales.URL_IS_NOT_VALID(value)]);\n    }\n  }),\n\n  /**\n   * Forgiving email check, checks dots and @\n   * @param value\n   * @param locales\n   */\n  email = (value, locales = defaultLocales) => new Promise((resolve, reject) => {\n\n    const atPosition = value.lastIndexOf(\"@\");\n\n    if (atPosition <= 0) {\n      reject([locales.EMAIL_IS_NOT_VALID(value)]);\n    }\n\n    if (value.lastIndexOf(\".\") <= atPosition) {\n      reject([locales.EMAIL_IS_NOT_VALID(value)]);\n    }\n\n    if (value.length - atPosition <= 4) {\n      reject([locales.EMAIL_IS_NOT_VALID(value)]);\n    }\n\n    resolve([locales.EMAIL_IS_NOT_VALID_LEGIT(value)]);\n\n  }),\n\n  /**\n   * Checks an at least two names and special chars\n   * @param value\n   * @param locales\n   */\n  fullName = (value, locales = defaultLocales) => isText(value, locales)\n    .then(response => {\n      const pattern = new RegExp(/^[\\p{L}]([-']?[\\p{L}]+)*( [\\p{L}]([-']?[\\p{L}]+)*)+$/u); //eslint-disable-line\n\n      if (pattern.test(value) === true) {\n        return Promise.resolve([...response, locales.FULL_NAME_IS_NOT_VALID_LEGIT(value)]);\n      }\n      return Promise.reject([locales.FULL_NAME_IS_NOT_VALID(value)])\n    })\n    .catch(response => Promise.reject([...response, locales.FULL_NAME_IS_NOT_VALID(value)]));\n"
   },
   {
     "__docId__": 17,
@@ -1728,7 +1728,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import * as locales from './locales';\nimport * as validators from './validators';\nimport { flattenResponse } from './Legitimate';\n\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 500;\n\ndescribe('validators', () => {\n\n  /** @test {validators} */\n  it('must be object', () => {\n    expect(typeof validators).toBe('object');\n  });\n\n  /** @test {isText} */\n  describe('isText', () => {\n\n    it('could resolve', cb => {\n\n      const testText = 'Just TESTING';\n\n      validators\n        .isText(testText)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(testText));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .isText(null)\n        .then(flattenResponse)\n        .then(response => {\n          cb.fail(response);\n        })\n        .catch((...response) => {\n\n          flattenResponse(...response)\n            .then(response => {\n              expect(response).toContain(locales.NOT_LEGIT(null));\n              cb();\n            })\n            .catch(cb.fail)\n        });\n\n    });\n\n  });\n\n  /** @test {notEmpty} */\n  describe('notEmpty', () => {\n\n    it('could resolve', cb => {\n\n      validators\n        .notEmpty('string')\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT('string'));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .notEmpty('')\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.EMPTY(''));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {minLowerCaseChars} */\n  describe('minLowerCaseChars', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'aüöıBBBB';\n\n      validators\n        .minLowerCaseChars(value, locales, 4)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(value, 4));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'üöıBBBB';\n\n      validators\n        .minLowerCaseChars(value, locales, 4)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NEED_MORE_LOWER_CASE(value, 4));\n          cb();\n        });\n\n    });\n\n  })\n\n  /** @test {minUpperCaseChars} */\n  describe('minUpperCaseChars', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'BbbBbBBÇ';\n\n      validators\n        .minUpperCaseChars(value, locales, 5)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(value, 5));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'BbbBbBBÇ';\n\n      validators\n        .minUpperCaseChars(value, locales, 6)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NEED_MORE_UPPER_CASE(value, 6));\n          cb();\n        });\n\n    });\n\n  })\n\n  /** @test {url} */\n  describe('url', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'https://example.org/file?a=b&c=d';\n\n      validators\n        .url(value, locales)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'https//example.orgfile?a=b&c=d';\n\n      validators\n        .url(value, locales)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.URL_IS_NOT_VALID(value));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {email} */\n  describe('email', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'furkan@τεστ.com';\n\n      validators\n        .email(value, locales)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'asdasd.asa';\n\n      validators\n        .email(value, locales)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.EMAIL_IS_NOT_VALID(value));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {fullName} */\n  describe('fullName', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'Furkan Tunalı öçÜ';\n\n      validators\n        .fullName(value, locales)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'Abc.Aa';\n\n      validators\n        .fullName(value, locales)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.FULL_NAME_IS_NOT_VALID(value));\n          cb();\n        });\n\n    });\n\n  })\n\n});\n"
+    "content": "import * as locales from './locales';\nimport * as validators from './validators';\nimport { flattenResponse } from './Legitimate';\n\n\njasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;\n\ndescribe('validators', () => {\n\n  /** @test {validators} */\n  it('must be object', () => {\n    expect(typeof validators).toBe('object');\n  });\n\n  /** @test {isText} */\n  describe('isText', () => {\n\n    it('could resolve', cb => {\n\n      const testText = 'Just TESTING';\n\n      validators\n        .isText(testText)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.LEGIT(testText));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .isText(null)\n        .then(flattenResponse)\n        .then(response => {\n          cb.fail(response);\n        })\n        .catch((...response) => {\n\n          flattenResponse(...response)\n            .then(response => {\n              expect(response).toContain(locales.NOT_LEGIT(null));\n              cb();\n            })\n            .catch(cb.fail)\n        });\n\n    });\n\n  });\n\n  /** @test {notEmpty} */\n  describe('notEmpty', () => {\n\n    it('could resolve', cb => {\n\n      validators\n        .notEmpty('string')\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.EMPTY_LEGIT('string'));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      validators\n        .notEmpty('')\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.EMPTY(''));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {min} */\n  describe('min', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'üöı';\n\n      validators\n        .min(value, locales, 3)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.TOO_SHORT_LEGIT(value, 3));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'üö';\n\n      validators\n        .min(value, locales, 3)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.TOO_SHORT(value, 3));\n          cb();\n        });\n\n    });\n\n  })\n\n  /** @test {max} */\n  describe('max', () => {\n\n    it('could resolve', cb => {\n\n      let value = '12345678';\n\n      validators\n        .max(value, locales, 8)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.TOO_LONG_LEGIT(value, 8));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = '12345678';\n\n      validators\n        .max(value, locales, 7)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          console.log('response', response);\n          expect(response).toContain(locales.TOO_LONG(value, 7));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {minLowerCaseChars} */\n  describe('minLowerCaseChars', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'aüöıBBBB';\n\n      validators\n        .minLowerCaseChars(value, locales, 4)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.NEED_MORE_LOWER_CASE_LEGIT(value, 4));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'üöıBBBB';\n\n      validators\n        .minLowerCaseChars(value, locales, 4)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NEED_MORE_LOWER_CASE(value, 4));\n          cb();\n        });\n\n    });\n\n  })\n\n  /** @test {minUpperCaseChars} */\n  describe('minUpperCaseChars', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'BbbBbBBÇ';\n\n      validators\n        .minUpperCaseChars(value, locales, 5)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.NEED_MORE_UPPER_CASE_LEGIT(value, 5));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'BbbBbBBÇ';\n\n      validators\n        .minUpperCaseChars(value, locales, 6)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NEED_MORE_UPPER_CASE(value, 6));\n          cb();\n        });\n\n    });\n\n  })\n\n  /** @test {url} */\n  describe('url', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'https://example.org/file?a=b&c=d';\n\n      validators\n        .url(value, locales)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.URL_IS_NOT_VALID_LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'https//example.orgfile?a=b&c=d';\n\n      validators\n        .url(value, locales)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.URL_IS_NOT_VALID(value));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {email} */\n  describe('email', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'furkan@τεστ.com';\n\n      validators\n        .email(value, locales)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.EMAIL_IS_NOT_VALID_LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'asdasd.asa';\n\n      validators\n        .email(value, locales)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.EMAIL_IS_NOT_VALID(value));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {fullName} */\n  describe('fullName', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'Furkan Tunalı öçÜ';\n\n      validators\n        .fullName(value, locales)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.FULL_NAME_IS_NOT_VALID_LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'Abc.Aa';\n\n      validators\n        .fullName(value, locales)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.FULL_NAME_IS_NOT_VALID(value));\n          cb();\n        });\n\n    });\n\n  });\n\n  /** @test {username} */\n  describe('username', () => {\n\n    it('could resolve', cb => {\n\n      let value = 'jacopkane';\n\n      validators\n        .alphanumeric(value, locales)\n        .then(flattenResponse)\n        .then(response => {\n          expect(response).toContain(locales.NOT_ALPHANUMERIC_LEGIT(value));\n          cb();\n        })\n        .catch(cb.fail);\n\n    });\n\n    it('could reject', cb => {\n\n      let value = 'Furkan Tunalı';\n\n      validators\n        .alphanumeric(value, locales)\n        .then(flattenResponse)\n        .then(cb.fail)\n        .catch(response => {\n          expect(response).toContain(locales.NOT_ALPHANUMERIC(value));\n          cb();\n        });\n\n    });\n\n  })\n\n});\n"
   },
   {
     "__docId__": 103,
@@ -1880,16 +1880,16 @@
     "testDepth": 1,
     "longname": "lib/validators.test.js~describe25.describe33",
     "access": null,
-    "description": "minLowerCaseChars",
+    "description": "min",
     "lineNumber": 87,
     "unknown": [
       {
         "tagName": "@test",
-        "tagValue": "{minLowerCaseChars}"
+        "tagValue": "{min}"
       }
     ],
     "testTargets": [
-      "minLowerCaseChars"
+      "min"
     ]
   },
   {
@@ -1931,16 +1931,16 @@
     "testDepth": 1,
     "longname": "lib/validators.test.js~describe25.describe36",
     "access": null,
-    "description": "minUpperCaseChars",
+    "description": "max",
     "lineNumber": 122,
     "unknown": [
       {
         "tagName": "@test",
-        "tagValue": "{minUpperCaseChars}"
+        "tagValue": "{max}"
       }
     ],
     "testTargets": [
-      "minUpperCaseChars"
+      "max"
     ]
   },
   {
@@ -1982,16 +1982,16 @@
     "testDepth": 1,
     "longname": "lib/validators.test.js~describe25.describe39",
     "access": null,
-    "description": "url",
-    "lineNumber": 157,
+    "description": "minLowerCaseChars",
+    "lineNumber": 158,
     "unknown": [
       {
         "tagName": "@test",
-        "tagValue": "{url}"
+        "tagValue": "{minLowerCaseChars}"
       }
     ],
     "testTargets": [
-      "url"
+      "minLowerCaseChars"
     ]
   },
   {
@@ -2006,7 +2006,7 @@
     "longname": "lib/validators.test.js~describe25.describe39.it40",
     "access": null,
     "description": "could resolve",
-    "lineNumber": 159
+    "lineNumber": 160
   },
   {
     "__docId__": 119,
@@ -2020,7 +2020,7 @@
     "longname": "lib/validators.test.js~describe25.describe39.it41",
     "access": null,
     "description": "could reject",
-    "lineNumber": 174
+    "lineNumber": 175
   },
   {
     "__docId__": 120,
@@ -2033,16 +2033,16 @@
     "testDepth": 1,
     "longname": "lib/validators.test.js~describe25.describe42",
     "access": null,
-    "description": "email",
-    "lineNumber": 192,
+    "description": "minUpperCaseChars",
+    "lineNumber": 193,
     "unknown": [
       {
         "tagName": "@test",
-        "tagValue": "{email}"
+        "tagValue": "{minUpperCaseChars}"
       }
     ],
     "testTargets": [
-      "email"
+      "minUpperCaseChars"
     ]
   },
   {
@@ -2057,7 +2057,7 @@
     "longname": "lib/validators.test.js~describe25.describe42.it43",
     "access": null,
     "description": "could resolve",
-    "lineNumber": 194
+    "lineNumber": 195
   },
   {
     "__docId__": 122,
@@ -2071,7 +2071,7 @@
     "longname": "lib/validators.test.js~describe25.describe42.it44",
     "access": null,
     "description": "could reject",
-    "lineNumber": 209
+    "lineNumber": 210
   },
   {
     "__docId__": 123,
@@ -2084,16 +2084,16 @@
     "testDepth": 1,
     "longname": "lib/validators.test.js~describe25.describe45",
     "access": null,
-    "description": "fullName",
-    "lineNumber": 227,
+    "description": "url",
+    "lineNumber": 228,
     "unknown": [
       {
         "tagName": "@test",
-        "tagValue": "{fullName}"
+        "tagValue": "{url}"
       }
     ],
     "testTargets": [
-      "fullName"
+      "url"
     ]
   },
   {
@@ -2108,7 +2108,7 @@
     "longname": "lib/validators.test.js~describe25.describe45.it46",
     "access": null,
     "description": "could resolve",
-    "lineNumber": 229
+    "lineNumber": 230
   },
   {
     "__docId__": 125,
@@ -2122,6 +2122,159 @@
     "longname": "lib/validators.test.js~describe25.describe45.it47",
     "access": null,
     "description": "could reject",
-    "lineNumber": 244
+    "lineNumber": 245
+  },
+  {
+    "__docId__": 126,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe48",
+    "testId": 48,
+    "memberof": "lib/validators.test.js~describe25",
+    "testDepth": 1,
+    "longname": "lib/validators.test.js~describe25.describe48",
+    "access": null,
+    "description": "email",
+    "lineNumber": 263,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{email}"
+      }
+    ],
+    "testTargets": [
+      "email"
+    ]
+  },
+  {
+    "__docId__": 127,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it49",
+    "testId": 49,
+    "memberof": "lib/validators.test.js~describe25.describe48",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe25.describe48.it49",
+    "access": null,
+    "description": "could resolve",
+    "lineNumber": 265
+  },
+  {
+    "__docId__": 128,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it50",
+    "testId": 50,
+    "memberof": "lib/validators.test.js~describe25.describe48",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe25.describe48.it50",
+    "access": null,
+    "description": "could reject",
+    "lineNumber": 280
+  },
+  {
+    "__docId__": 129,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe51",
+    "testId": 51,
+    "memberof": "lib/validators.test.js~describe25",
+    "testDepth": 1,
+    "longname": "lib/validators.test.js~describe25.describe51",
+    "access": null,
+    "description": "fullName",
+    "lineNumber": 298,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{fullName}"
+      }
+    ],
+    "testTargets": [
+      "fullName"
+    ]
+  },
+  {
+    "__docId__": 130,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it52",
+    "testId": 52,
+    "memberof": "lib/validators.test.js~describe25.describe51",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe25.describe51.it52",
+    "access": null,
+    "description": "could resolve",
+    "lineNumber": 300
+  },
+  {
+    "__docId__": 131,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it53",
+    "testId": 53,
+    "memberof": "lib/validators.test.js~describe25.describe51",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe25.describe51.it53",
+    "access": null,
+    "description": "could reject",
+    "lineNumber": 315
+  },
+  {
+    "__docId__": 132,
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe54",
+    "testId": 54,
+    "memberof": "lib/validators.test.js~describe25",
+    "testDepth": 1,
+    "longname": "lib/validators.test.js~describe25.describe54",
+    "access": null,
+    "description": "username",
+    "lineNumber": 333,
+    "unknown": [
+      {
+        "tagName": "@test",
+        "tagValue": "{username}"
+      }
+    ],
+    "testTargets": [
+      "username"
+    ]
+  },
+  {
+    "__docId__": 133,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it55",
+    "testId": 55,
+    "memberof": "lib/validators.test.js~describe25.describe54",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe25.describe54.it55",
+    "access": null,
+    "description": "could resolve",
+    "lineNumber": 335
+  },
+  {
+    "__docId__": 134,
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it56",
+    "testId": 56,
+    "memberof": "lib/validators.test.js~describe25.describe54",
+    "testDepth": 2,
+    "longname": "lib/validators.test.js~describe25.describe54.it56",
+    "access": null,
+    "description": "could reject",
+    "lineNumber": 350
   }
 ]

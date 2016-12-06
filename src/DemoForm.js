@@ -64,10 +64,17 @@ export class DemoForm extends Component {
     firstAndLastName : [validators.notEmpty, validators.fullName],
     password : [
       validators.notEmpty,
+      (...params) => validators.min(...params, 8),
+      (...params) => validators.max(...params, 16),
       (...params) => validators.minLowerCaseChars(...params, 1),
       (...params) => validators.minUpperCaseChars(...params, 1)
     ],
-    username : [validators.notEmpty],
+    username : [
+      validators.notEmpty,
+      validators.alphanumeric,
+      (...params) => validators.min(...params, 3),
+      (...params) => validators.max(...params, 10),
+    ],
     email : [validators.email, validators.notEmpty],
     url : [validators.url]
   };
