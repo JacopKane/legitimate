@@ -75,13 +75,13 @@ describe('validators', () => {
         .then(flattenResponse)
         .then(cb.fail)
         .catch(response => {
-          expect(response).toContain(locales.NOT_LEGIT(''));
+          expect(response).toContain(locales.EMPTY(''));
           cb();
         });
 
     });
 
-  })
+  });
 
   /** @test {minLowerCaseChars} */
   describe('minLowerCaseChars', () => {
@@ -145,7 +145,7 @@ describe('validators', () => {
         .then(flattenResponse)
         .then(cb.fail)
         .catch(response => {
-          expect(response).toContain(locales.NEED_MORE_LOWER_CASE(value, 6));
+          expect(response).toContain(locales.NEED_MORE_UPPER_CASE(value, 6));
           cb();
         });
 

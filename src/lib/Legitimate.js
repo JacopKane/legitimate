@@ -12,7 +12,7 @@ const
   };
 
 /**
- * Union
+ * Merge unique
  * @param response
  */
 export const flattenResponse = response => new Promise((resolve, reject) => {
@@ -25,7 +25,9 @@ export const flattenResponse = response => new Promise((resolve, reject) => {
     }
     resolve([...new Set([].concat(...response))]);
   } catch (error) {
+
     reject(error);
+
   }
 });
 
@@ -120,7 +122,9 @@ export class Legitimate {
         .all(this.rules[prop].map(validator => validator(this.state[prop], this.locales)))
         .then(flattenResponse)
         .then(resolve)
-        .catch(reject);
+        .catch(response => flattenResponse(response)
+          .then(reject)
+          .catch(reject));
 
     });
   }

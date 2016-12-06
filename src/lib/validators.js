@@ -17,8 +17,8 @@ export const
    */
   notEmpty = (value, locales = defaultLocales) => isText(value, locales)
     .then(response => value.length > 0 ?
-        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY]))
-    .catch(response => Promise.reject([response, locales.NOT_LEGIT(value)])),
+        Promise.resolve([...response, locales.LEGIT(value)]) : Promise.reject([locales.EMPTY(value)]))
+    .catch(response => Promise.reject([...response, locales.EMPTY(value)])),
 
   /**
    *
@@ -35,7 +35,7 @@ export const
       }
       return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])
     })
-    .catch(response => Promise.reject([response, locales.NEED_MORE_LOWER_CASE(value, min)])),
+    .catch(response => Promise.reject([...response, locales.NEED_MORE_LOWER_CASE(value, min)])),
 
   /**
    *
@@ -50,9 +50,9 @@ export const
       if (value.match(pattern).length >= min) {
         return Promise.resolve([...response, locales.LEGIT(value, min)]);
       }
-      return Promise.reject([locales.NEED_MORE_LOWER_CASE(value, min)])
+      return Promise.reject([locales.NEED_MORE_UPPER_CASE(value, min)])
     })
-    .catch(response => Promise.reject([response, locales.NEED_MORE_LOWER_CASE(value, min)])),
+    .catch(response => Promise.reject([...response, locales.NEED_MORE_UPPER_CASE(value, min)])),
 
   /**
    * uses URL from DOM
@@ -104,8 +104,8 @@ export const
       const pattern = new RegExp(/^[\p{L}]([-']?[\p{L}]+)*( [\p{L}]([-']?[\p{L}]+)*)+$/u); //eslint-disable-line
 
       if (pattern.test(value) === true) {
-        return Promise.resolve([response, locales.LEGIT(value)]);
+        return Promise.resolve([...response, locales.LEGIT(value)]);
       }
       return Promise.reject([locales.FULL_NAME_IS_NOT_VALID(value)])
     })
-    .catch(response => Promise.reject([response, locales.FULL_NAME_IS_NOT_VALID(value)]));
+    .catch(response => Promise.reject([...response, locales.FULL_NAME_IS_NOT_VALID(value)]));

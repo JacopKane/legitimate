@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import logo from './logo.png';
 import pkg from '../package.json';
+import { DemoForm } from './DemoForm';
+import { Container, Row, Col } from 'reactstrap';
+import 'bootstrap/dist/css/bootstrap.css';
 import './Demo.css';
 
 let ghBadgeUrl = 'https://ghbtns.com/github-btn.html';
@@ -15,7 +18,7 @@ export class Demo extends Component {
         <div className="Demo-header">
           <img src={logo} className="Demo-logo" alt="logo" />
           <h1>{ pkg.name }</h1>
-          <p>
+          <div>
             <a target="_blank" alt="Docs" href="https://jacopkane.github.io/legitimate/docs/">
               <img src="https://doc.esdoc.org/github.com/JacopKane/legitimate/badge.svg" role="presentation" />
             </a>
@@ -24,17 +27,34 @@ export class Demo extends Component {
               <img role="presentation" src="https://img.shields.io/npm/v/legitimate.svg" alt="npm" />
             </a>
             &nbsp;
-            <iframe src={ ghBadgeUrl }
-                    frameBorder="0"
-                    scrolling="0"
-                    width="51px"
-                    height="20px"></iframe>
-          </p>
+            <iframe
+              src={ ghBadgeUrl }
+              frameBorder="0"
+              scrolling="0"
+              width="51px"
+              height="20px" />
+          </div>
         </div>
-        <div className="Demo-intro">
-          <p>{ pkg.description }</p>
-          <p><strong>TODO:</strong> Add a demo</p>
-        </div>
+
+        <Container fluid>
+
+          <div className="Demo-intro">
+
+            <p>{ pkg.description }</p>
+
+          </div>
+
+          <Row>
+
+            <Col xs={{ size : 6, offset : 3 }}>
+
+              <DemoForm fields={[ 'firstAndLastName', 'username', 'password', 'email' ]} />
+
+            </Col>
+
+          </Row>
+
+        </Container>
       </div>
     );
   }
