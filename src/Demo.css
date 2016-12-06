@@ -17,6 +17,10 @@ body {
   color: white;
 }
 
+.Demo-header-links {
+  font-size : 2.1rem;
+}
+
 .Demo-intro {
   text-align: center;
   font-size: large;

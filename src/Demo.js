@@ -18,7 +18,7 @@ export class Demo extends Component {
         <div className="Demo-header">
           <img src={logo} className="Demo-logo" alt="logo" />
           <h1>{ pkg.name }</h1>
-          <div>
+          <div className="Demo-header-links">
             <a target="_blank" alt="Docs" href="https://jacopkane.github.io/legitimate/docs/">
               <img src="https://doc.esdoc.org/github.com/JacopKane/legitimate/badge.svg" role="presentation" />
             </a>
