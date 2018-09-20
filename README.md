@@ -1,5 +1,7 @@
 # legitimate
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JacopKane/legitimate.svg)](https://greenkeeper.io/)
+
 [![npm][npm-image]][npm-url]
 [![docs][docs-image]][docs-url]
 [![build][travis-image]][travis-url]
